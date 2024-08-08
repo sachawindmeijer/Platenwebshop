@@ -1,4 +1,8 @@
 package com.example.platenwinkel.repositories;
 
-public interface RapportRepository extends JpaRepository<Rapport, Long> {
+import com.example.platenwinkel.models.Report;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ReportRepository extends JpaRepository<Report, Long> {
+
 }

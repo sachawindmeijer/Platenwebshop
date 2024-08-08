@@ -1,79 +1,82 @@
 package com.example.platenwinkel.models;
 
-
+import com.example.platenwinkel.enumeration.Genre;
+import com.example.platenwinkel.helper.PriceCalculator;
 import jakarta.persistence.*;
 
-@Entity
+import java.time.LocalDate;
+
+
+//Beheer van productgegevens (toevoegen, bewerken van beschrijvingen, releasedata).
+//Aanpassing van voorraadniveaus.
+
+//Beheer van promoties en aanbiedingen. private List<Sale> sales;
+//boolean
+// if yes then 25% off
+
+//Upload en beheer van productafbeeldingen (hoesafbeeldingen, vinyl, extra's).
+//
+//
+@Entity//geeft aan dat de class die volgt een entiteit is in de database
 @Table(name = "LpProduct")
 public class LpProduct {
+    //  @Id  //  Een entiteit moet een primary key bevatten(id)
 
-
-    //    //  Een entiteit moet een primary key bevatten(id)
-
-    //    // GeneratedValue betekend dat je deze waarde niet zelf hoeft in te vullen, dit doet Spring Boot voor jou bij het opslaan in de database.
+    //  @GeneratedValue  // GeneratedValue betekend dat je deze waarde niet zelf hoeft in te vullen, dit doet Spring Boot voor jou bij het opslaan in de database.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
 
     private String artist;
-    private String titel;
-    private Double price;
+    private String album;
     private String description;
+    private LocalDate releaseDate;
+   private Genre genre;
+    private int inStock; // dit aanpassen in het klassen diagram
 
-    private String genre;
-    private boolean opvoorraad; // dit aanpassen in het klassen diagram
+//    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    //private Report inventory;
+
+//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+//     private Promotion promotion;
+
     private double priceInclVat;
     private double priceEclVat;//ook deze aanpassen
 
+//    List <Image> images;
     //
 
-
-    //
     public String getArtist() {
         return artist;
     }
 
-    //
     public void setArtist(String artist) {
         this.artist = artist;
     }
 
-    public String getTitel() {
-        return titel;
+    public String getAlbum() {
+        return album;
     }
 
-    public void setTitel(String titel) {
-        this.titel = titel;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setAlbum(String album) {
+        this.album= album;
     }
 
     public String getDescription() {
         return description;
     }
-    public String getGenre() {
-        return genre;
-    }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
+
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public boolean isOpvoorraad() {
-        return opvoorraad;
+    public int getInStock() {
+        return inStock;
     }
 
-    public void setOpvoorraad(boolean opvoorraad) {
-        this.opvoorraad = opvoorraad;
+    public void setInStock(int inStock) {
+        this.inStock = inStock;
     }
 
     public double getPriceInclVat() {
@@ -81,7 +84,7 @@ public class LpProduct {
     }
 
     public void setPriceInclVat(double priceInclVat) {
-        this.priceInclVat = priceInclVat;
+        this.priceInclVat = PriceCalculator.calculatePriceInclVat(priceEclVat);
     }
 
     public double getPriceEclVat() {
@@ -92,9 +95,28 @@ public class LpProduct {
         this.priceEclVat = priceEclVat;
     }
 
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public LocalDate getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(LocalDate releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
+    public Genre getGenre() {
+        return genre;
     }
 }
 //

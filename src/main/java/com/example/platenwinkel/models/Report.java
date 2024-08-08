@@ -1,12 +1,10 @@
 package com.example.platenwinkel.models;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-
-public class Repport {
+@Entity
+public class Report {
 // - ( product voorraadniveaus, verkopen)
 
 
@@ -14,8 +12,8 @@ public class Repport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //    @OneToOne
-//    @JoinColumn(name = "product_id")
+        @OneToOne
+    @JoinColumn(name = "product_id")
     private LpProduct lpProduct;
 
     private int voorraadAantal;
@@ -24,9 +22,9 @@ public class Repport {
 
     private LocalDateTime rapportDatum;
 
-    public Repport() {}
+    public Report() {}
 
-    public Rapport(LpProduct lpProduct, int voorraadAantal, int verkochtAantal, LocalDateTime rapportDatum) {
+    public Report(LpProduct lpProduct, int voorraadAantal, int verkochtAantal, LocalDateTime rapportDatum) {
         this.lpProduct = lpProduct;
         this.voorraadAantal = voorraadAantal;
         this.verkochtAantal = verkochtAantal;

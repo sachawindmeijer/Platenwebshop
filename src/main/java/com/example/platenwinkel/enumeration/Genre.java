@@ -1,4 +1,4 @@
-package com.example.platenwinkel.models;
+package com.example.platenwinkel.enumeration;
 
 public enum Genre {
     ROCK, POP, JAZZ, CLASSICAL, HIPHOP, SOUL
