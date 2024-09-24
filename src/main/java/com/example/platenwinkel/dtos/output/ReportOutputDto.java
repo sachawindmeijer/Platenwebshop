@@ -1,35 +1,15 @@
-package com.example.platenwinkel.models;
-
-import jakarta.persistence.*;
+package com.example.platenwinkel.dtos.output;
 
 import java.time.LocalDateTime;
-@Entity
-public class Report {
-// - ( product voorraadniveaus, verkopen)
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ReportOutputDto {
     private Long id;
-
-        @OneToOne
-    @JoinColumn(name = "lpproduct_id")
-    private LpProduct lpProduct;
-
+    private Long productId;
+    private String artist;
+    public String album;
     private int voorraadAantal;
-
     private int verkochtAantal;
-
     private LocalDateTime rapportDatum;
-
-    public Report() {}
-
-    public Report(LpProduct lpProduct, int voorraadAantal, int verkochtAantal, LocalDateTime rapportDatum) {
-        this.lpProduct = lpProduct;
-        this.voorraadAantal = voorraadAantal;
-        this.verkochtAantal = verkochtAantal;
-        this.rapportDatum = rapportDatum;
-    }
 
     public Long getId() {
         return id;
@@ -39,12 +19,28 @@ public class Report {
         this.id = id;
     }
 
-    public LpProduct getLpProduct() {
-        return lpProduct;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setLpProduct(LpProduct lpProduct) {
-        this.lpProduct = lpProduct;
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
     }
 
     public int getVoorraadAantal() {

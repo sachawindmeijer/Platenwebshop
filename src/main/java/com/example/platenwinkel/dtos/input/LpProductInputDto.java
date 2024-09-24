@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Positive;
 
 public class LpProductInputDto {
 // dit vul je in in Postman
-private Long id;
+//public Long id;
     @NotBlank
     public String artist;
     public String album;
@@ -16,72 +16,69 @@ private Long id;
     public Genre genre;
     public int inStock; // dit aanpassen in het klassen diagram
 
-    @Positive
+
     public double  PriceInclVat;
 
-    @Positive
+
     public double priceEclVat;//ook deze aanpassen
 
 
 
 // public double sellPrice; dit niet in de input dto zetten anders kan de klant het zien
 
-    // de getter and setter gaaan naar de mapper
-//    public String getArtist() {
-//        return artist;
-//    }
-//
-//    public void setArtist(String artist) {
-//        this.artist = artist;
-//    }
-//
-//    public String getTitel() {
-//        return titel;
-//    }
-//
-//    public void setTitel(String titel) {
-//        this.titel = titel;
-//    }
-//
-//
-//
-//    public String getDescription() {
-//        return description;
-//    }
-//
-//    public void setDescription(String description) {
-//        this.description = description;
-//    }
-//
-//    public String getGenre() {
-//        return genre;
-//    }
-//
-//    public void setGenre(String genre) {
-//        this.genre = genre;
-//    }
-//
-//    public LocalDate getOriginalStock() {
-//        return originalStock;
-//    }
-//
-//    public void setOriginalStock(LocalDate originalStock) {
-//        this.originalStock = originalStock;
-//    }
-//
-//    public double getPriceEclVat() {
-//        return priceEclVat;
-//    }
-//
-//    public void setPriceEclVat(double priceEclVat) {
-//        this.priceEclVat = priceEclVat;
-//    }
-//
-//    public double getPriceInclVat() {
-//        return PriceInclVat;
-//    }
-//
-//    public void setPriceInclVat(double priceInclVat) {
-//        PriceInclVat = priceInclVat;
-//    }
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
+    public int getInStock() {
+        return inStock;
+    }
+
+    public void setInStock(int inStock) {
+        this.inStock = inStock;
+    }
+
+    public double getPriceInclVat() {
+        return PriceInclVat;
+    }
+
+    public void setPriceInclVat(double priceInclVat) {
+        PriceInclVat = priceInclVat;
+    }
+
+    public double getPriceEclVat() {
+        return priceEclVat;
+    }
+
+    public void setPriceEclVat(double priceEclVat) {
+        this.priceEclVat = priceEclVat;
+    }
 }

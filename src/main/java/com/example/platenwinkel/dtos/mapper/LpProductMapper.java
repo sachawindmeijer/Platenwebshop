@@ -9,13 +9,13 @@ public class LpProductMapper {
     public static LpProduct fromInputDtoToModel(LpProductInputDto lpProductInputDto) {
         LpProduct lp = new LpProduct();
 
-        lp.setArtist(lpProductInputDto.artist);
-        lp.setAlbum(lpProductInputDto.album);
-        lp.setDescription(lpProductInputDto.description);
-        lp.setGenre(lpProductInputDto.genre);
-        lp.setInStock(lpProductInputDto.inStock);
-        lp.setPriceEclVat(lpProductInputDto.priceEclVat);
-        lp.setPriceInclVat(lpProductInputDto.PriceInclVat);//in de LpProduct zit de calculatehelper
+        lp.setArtist(lpProductInputDto.getArtist());
+        lp.setAlbum(lpProductInputDto.getAlbum());
+        lp.setDescription(lpProductInputDto.getDescription());
+        lp.setGenre(lpProductInputDto.getGenre());
+        lp.setInStock(lpProductInputDto.getInStock());
+        lp.setPriceInclVat(lpProductInputDto.getPriceInclVat());
+        lp.setPriceEclVat(lpProductInputDto.getPriceEclVat());//in de LpProduct zit de calculatehelper
 
         return lp;
     }
@@ -29,7 +29,8 @@ public class LpProductMapper {
         lpProductOutputDto.setDescription(lpProduct.getDescription());
         lpProductOutputDto.setGenre(lpProduct.getGenre());
         lpProductOutputDto.setInStock(lpProduct.getInStock());
-
+        lpProductOutputDto.setPriceInclVat(lpProduct.getPriceInclVat());
+        lpProductOutputDto.setPriceEclVat(lpProduct.getPriceEclVat());
 
 
         return lpProductOutputDto;

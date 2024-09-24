@@ -1,7 +1,7 @@
 package com.example.platenwinkel.exceptions;
 
 public class RecordNotFoundException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+    private static final Long serialVersionUID = 1L;
 
     public RecordNotFoundException() {
 

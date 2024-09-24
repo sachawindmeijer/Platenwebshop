@@ -8,7 +8,9 @@ import com.example.platenwinkel.models.User;
 import com.example.platenwinkel.repositories.UserRepository;
 
 import com.example.platenwinkel.untils.RandomStringGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,9 @@ import java.util.Set;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -52,6 +57,10 @@ public class UserService {
     public String createUser(UserOutputDto userDto) {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
         userDto.setApikey(randomString);
+
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+        userDto.setPassword(encodedPassword);
+
         User newUser = userRepository.save(toUser(userDto));
         return newUser.getUsername();
     }

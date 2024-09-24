@@ -16,6 +16,9 @@ public class LpProductOutputDto {
 
 //    private Integer sellprice; // we willen niet dat de klant de sell price kan zien
 
+
+
+
     public String getArtist() {
         return artist;
     }
@@ -59,5 +62,25 @@ public class LpProductOutputDto {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public double getPriceInclVat() {
+        return priceInclVat;
+    }
+
+    public void setPriceInclVat(double priceInclVat) {
+        this.priceInclVat = priceInclVat;
+    }
+
+    public double getPriceEclVat() {
+        return priceEclVat;
+    }
+
+    public void setPriceEclVat(double priceEclVat) {
+        this.priceEclVat = priceEclVat;
     }
 }
