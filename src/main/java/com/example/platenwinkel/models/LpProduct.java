@@ -43,6 +43,19 @@ public class LpProduct {
     private double priceInclVat;
     private double priceEclVat;//ook deze aanpassen
 
+    public LpProduct(Long id, String artist, String album, String description, Genre genre, int inStock, double priceEclVat) {
+        this.id = id;
+        this.artist = artist;
+        this.album = album;
+        this.description = description;
+        this.genre = genre;
+        this.inStock = inStock;
+        this.priceEclVat = priceEclVat;
+    }
+    public LpProduct() {
+
+    }
+
 //    List <Image> images;
     //
 

@@ -69,20 +69,20 @@ public class LpProductController {
         LpProductOutputDto lpProduct = lpProductService.getLpProductById(id);
         return ResponseEntity.ok().body(lpProduct);
     }
-//    @GetMapping("/search")
-//    public ResponseEntity<List<LpProduct>> getLpProductByArtistName(@RequestParam String artist) {
-//        return ResponseEntity.ok(lpProductRepository.findAllLpProductsByArtistEqualsIgnoreCase(artist));
-//    }
-//
-//
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteLpProduct(@PathVariable Long id) {
+        System.out.println("Received request to delete LP product with ID: " + id);
 
-        // Verwijder de lp met het opgegeven id uit de database.
-        lpProductService.deletelpproduct(id);
 
-        // Return een 204 status
+        try {
+            lpProductService.deletelpproduct(id);
+            System.out.println("LP product deleted successfully");
+        } catch (Exception e) {
+            System.out.println("Error occurred: " + e.getMessage());
+            throw e;
+        }
         return ResponseEntity.noContent().build();
     }
 }

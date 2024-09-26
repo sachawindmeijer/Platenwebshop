@@ -66,4 +66,6 @@ public class ReportOutputDto {
     public void setRapportDatum(LocalDateTime rapportDatum) {
         this.rapportDatum = rapportDatum;
     }
+
+
 }

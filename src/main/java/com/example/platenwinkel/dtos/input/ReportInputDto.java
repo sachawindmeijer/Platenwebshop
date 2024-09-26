@@ -19,4 +19,16 @@ public Long productId;
     public LocalDateTime getRapportDatum() {
         return rapportDatum;
     }
+
+    public void setVoorraadAantal(int voorraadAantal) {
+        this.voorraadAantal = voorraadAantal;
+    }
+
+    public void setVerkochtAantal(int verkochtAantal) {
+        this.verkochtAantal = verkochtAantal;
+    }
+
+    public void setRapportDatum(LocalDateTime rapportDatum) {
+        this.rapportDatum = rapportDatum;
+    }
 }
