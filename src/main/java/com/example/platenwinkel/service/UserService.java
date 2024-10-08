@@ -1,5 +1,6 @@
 package com.example.platenwinkel.service;
 
+import com.example.platenwinkel.dtos.input.UserInputDto;
 import com.example.platenwinkel.dtos.output.UserOutputDto;
 import com.example.platenwinkel.exceptions.RecordNotFoundException;
 import com.example.platenwinkel.models.Authority;
@@ -54,7 +55,7 @@ public class UserService {
         return userRepository.existsById(username);
     }
 
-    public String createUser(UserOutputDto userDto) {
+    public String createUser(UserInputDto userDto) {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
         userDto.setApikey(randomString);
 
@@ -70,7 +71,7 @@ public class UserService {
     }
 
     public void updateUser(String username, UserOutputDto newUser) {
-        if (!userRepository.existsById(username)) throw new RecordNotFoundException();
+        if (!userRepository.existsById(username)) throw new RecordNotFoundException("User not found: " + username);
         User user = userRepository.findById(username).get();
         user.setPassword(newUser.getPassword());
         userRepository.save(user);
@@ -113,7 +114,7 @@ public class UserService {
         return dto;
     }
 
-    public User toUser(UserOutputDto userDto) {
+    public User toUser(UserInputDto userDto) {
 
         var user = new User();
 

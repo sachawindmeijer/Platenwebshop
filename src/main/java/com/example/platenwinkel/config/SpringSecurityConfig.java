@@ -1,7 +1,8 @@
 package com.example.platenwinkel.config;
 
 import com.example.platenwinkel.filter.JwtRequestFilter;
-import com.example.platenwinkel.service.CostumUserDetailsService;
+import com.example.platenwinkel.service.MyUserDetailService;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,12 +21,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SpringSecurityConfig {
 
-    public final CostumUserDetailsService customUserDetailsService;
+    public final MyUserDetailService myUserDetailService;
 
     private final JwtRequestFilter jwtRequestFilter;
 
-    public SpringSecurityConfig(CostumUserDetailsService customUserDetailsService, JwtRequestFilter jwtRequestFilter) {
-        this.customUserDetailsService = customUserDetailsService;
+    public SpringSecurityConfig(MyUserDetailService myUserDetailsService, JwtRequestFilter jwtRequestFilter) {
+        this.myUserDetailService = myUserDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
@@ -34,7 +35,7 @@ public class SpringSecurityConfig {
     public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
         var auth = new DaoAuthenticationProvider();
         auth.setPasswordEncoder(passwordEncoder);
-        auth.setUserDetailsService(customUserDetailsService);
+        auth.setUserDetailsService(myUserDetailService);
         return new ProviderManager(auth);
     }
 
@@ -57,7 +58,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/orders/**").authenticated() // Orders can be accessed only by authenticated users
 
                                 // Admin endpoints
-                                .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/users").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/lpproducts").hasRole("ADMIN")

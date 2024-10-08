@@ -1,4 +1,4 @@
-package com.example.platenwinkel.dtos;
+package com.example.platenwinkel.payload;
 
 public class AuthenticationRequest {
 

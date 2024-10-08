@@ -1,4 +1,4 @@
-package com.example.platenwinkel.config;
+package com.example.platenwinkel.payload;
 
 public class AuthenticationResponse {
 
@@ -15,4 +15,5 @@ public class AuthenticationResponse {
     public String getJwt() {
         return jwt;
     }
+
 }

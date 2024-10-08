@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity// dan zeggen we dat deze naar de database moet
 @Table(name = "users")
-public class User {
+public class User {// inlogt in je systeem. Dit kan een admin, een verkoper, of een klant zijn
 
     // Deze eerste 3 variabelen zijn verplicht om te kunnen inloggen met een username, password en rol.
     @Id

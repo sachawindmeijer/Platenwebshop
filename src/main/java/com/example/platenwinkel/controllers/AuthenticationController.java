@@ -1,8 +1,9 @@
 package com.example.platenwinkel.controllers;
 
-import com.example.platenwinkel.config.AuthenticationResponse;
-import com.example.platenwinkel.dtos.AuthenticationRequest;
-import com.example.platenwinkel.service.CostumUserDetailsService;
+import com.example.platenwinkel.payload.AuthenticationResponse;
+import com.example.platenwinkel.payload.AuthenticationRequest;
+
+import com.example.platenwinkel.service.MyUserDetailService;
 import com.example.platenwinkel.untils.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,12 @@ import java.security.Principal;
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
 
-    private final CostumUserDetailsService userDetailsService;
+    private final MyUserDetailService userDetailsService;
 
     private final JwtUtil jwtUtl;
 
 
-    public AuthenticationController(AuthenticationManager authenticationManager, CostumUserDetailsService userDetailsService, JwtUtil jwtUtl) {
+    public AuthenticationController(AuthenticationManager authenticationManager, MyUserDetailService userDetailsService, JwtUtil jwtUtl) {
         this.authenticationManager = authenticationManager;
 
         this.userDetailsService = userDetailsService;

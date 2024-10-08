@@ -1,6 +1,7 @@
 package com.example.platenwinkel.filter;
 
-import com.example.platenwinkel.service.CostumUserDetailsService;
+
+import com.example.platenwinkel.service.MyUserDetailService;
 import com.example.platenwinkel.untils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,11 +18,11 @@ import java.io.IOException;
 
 @Component
 public class JwtRequestFilter  extends OncePerRequestFilter {
-    private final CostumUserDetailsService userDetailsService;
+    private final MyUserDetailService userDetailsService;
 
     private final JwtUtil jwtUtil;
 
-    public JwtRequestFilter(CostumUserDetailsService userDetailsService, JwtUtil jwtUtil) {
+    public JwtRequestFilter(MyUserDetailService userDetailsService, JwtUtil jwtUtil) {
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
     }

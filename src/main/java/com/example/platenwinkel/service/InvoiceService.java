@@ -6,24 +6,25 @@ import com.example.platenwinkel.dtos.output.InvoiceOutputDto;
 import com.example.platenwinkel.models.Customer;
 import com.example.platenwinkel.models.Invoice;
 import com.example.platenwinkel.models.Order;
-import com.example.platenwinkel.repositories.CostumerRepository;
+
+import com.example.platenwinkel.repositories.CustomerRepository;
 import com.example.platenwinkel.repositories.InvoiceRepository;
 import com.example.platenwinkel.repositories.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 @Service
 public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
-    private final CostumerRepository costumerRepository;
+    private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
 
-    public InvoiceService(InvoiceRepository invoiceRepository, CostumerRepository costumerRepository, OrderRepository orderRepository) {
+    public InvoiceService(InvoiceRepository invoiceRepository, CustomerRepository customerRepository, OrderRepository orderRepository) {
         this.invoiceRepository = invoiceRepository;
-        this.costumerRepository = costumerRepository;
+        this.customerRepository = customerRepository;
         this.orderRepository = orderRepository;
     }
 
@@ -42,7 +43,7 @@ public class InvoiceService {
 
     public InvoiceOutputDto createInvoice(InvoiceInputDto invoiceInputDto) {
         // Haal de klant op
-        Customer customer = costumerRepository.findById(invoiceInputDto.getCustomerId())
+        Customer customer = customerRepository.findById(invoiceInputDto.getCustomerId())
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
 
         // Haal de bijbehorende orders op
@@ -68,7 +69,7 @@ public class InvoiceService {
                 .orElseThrow(() -> new IllegalArgumentException("Invoice not found"));
 
         // Haal de klant en orders opnieuw op om te updaten
-        Customer customer = costumerRepository.findById(inputDto.getCustomerId())
+        Customer customer = customerRepository.findById(inputDto.getCustomerId())
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
         List<Order> orders = inputDto.getOrderIds().stream()
                 .map(orderId -> orderRepository.findById(orderId)

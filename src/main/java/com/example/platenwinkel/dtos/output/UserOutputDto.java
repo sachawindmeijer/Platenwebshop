@@ -5,6 +5,7 @@ import com.example.platenwinkel.models.Authority;
 import java.util.Set;
 
 public class UserOutputDto {
+
     public String username;
     public String password;
     public Boolean enabled;
