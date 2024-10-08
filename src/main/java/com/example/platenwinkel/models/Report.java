@@ -13,7 +13,7 @@ public class Report {
     private Long id;
 
         @OneToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "lpproduct_id")
     private LpProduct lpProduct;
 
     private int voorraadAantal;

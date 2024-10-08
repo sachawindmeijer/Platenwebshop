@@ -1,7 +1,7 @@
 package com.example.platenwinkel.exceptions;
 
-public class ResourceNotFoundException extends RuntimeException{
-    public ResourceNotFoundException(String message) {
+public class InvoiceItemNotFoundException extends RuntimeException{
+    public InvoiceItemNotFoundException(String message) {
         super(message);
     }
 }

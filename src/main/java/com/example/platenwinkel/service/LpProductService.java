@@ -17,6 +17,7 @@ import java.util.Optional;
 public class LpProductService {
     private final LpProductRepository lpProductRepository;//depandancies
 
+
     public LpProductService(LpProductRepository lpProductRepository) {
         this.lpProductRepository = lpProductRepository;
     }
@@ -61,8 +62,9 @@ public class LpProductService {
     // De eerste keer van dto naar televsion, omdat de parameter een dto is.
     // De tweede keer van television naar dto, omdat de return waarde een dto is.
     public LpProductOutputDto addLpProduct(LpProductInputDto lpProductInputDto) {
-        LpProduct l = lpProductRepository.save(LpProductMapper.fromInputDtoToModel(lpProductInputDto));
-        return LpProductMapper.fromModelToOutputDto(l);
+        LpProduct lpProduct = LpProductMapper.fromInputDtoToModel(lpProductInputDto);
+        LpProduct savedProduct = lpProductRepository.save(lpProduct);
+        return LpProductMapper.fromModelToOutputDto(savedProduct);
     }
 
     // Dit is de vertaal methode van Television naar TelevisionDto

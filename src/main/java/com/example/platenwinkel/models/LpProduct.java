@@ -25,13 +25,13 @@ public class LpProduct {
     //  @GeneratedValue  // GeneratedValue betekend dat je deze waarde niet zelf hoeft in te vullen, dit doet Spring Boot voor jou bij het opslaan in de database.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    Long id;
 
     private String artist;
     private String album;
     private String description;
     private LocalDate releaseDate;
-   private Genre genre;
+    private Genre genre;
     private int inStock; // dit aanpassen in het klassen diagram
 
 //    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
@@ -42,6 +42,19 @@ public class LpProduct {
 
     private double priceInclVat;
     private double priceEclVat;//ook deze aanpassen
+
+    public LpProduct(Long id, String artist, String album, String description, Genre genre, int inStock, double priceEclVat) {
+        this.id = id;
+        this.artist = artist;
+        this.album = album;
+        this.description = description;
+        this.genre = genre;
+        this.inStock = inStock;
+        this.priceEclVat = priceEclVat;
+    }
+    public LpProduct() {
+
+    }
 
 //    List <Image> images;
     //
@@ -99,7 +112,7 @@ public class LpProduct {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
