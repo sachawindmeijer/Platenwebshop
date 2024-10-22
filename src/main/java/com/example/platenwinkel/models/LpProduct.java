@@ -18,7 +18,7 @@ import java.time.LocalDate;
 //
 //
 @Entity//geeft aan dat de class die volgt een entiteit is in de database
-@Table(name = "LpProduct")
+@Table(name = "Lp_Product")
 public class LpProduct {
     //  @Id  //  Een entiteit moet een primary key bevatten(id)
 
@@ -31,6 +31,7 @@ public class LpProduct {
     private String album;
     private String description;
     private LocalDate releaseDate;
+    @Enumerated(EnumType.STRING)
     private Genre genre;
     private int inStock; // dit aanpassen in het klassen diagram
 

@@ -62,12 +62,4 @@ public class User {// inlogt in je systeem. Dit kan een admin, een verkoper, of 
     public void removeAuthority(Authority authority) {
         this.authorities.remove(authority);
     }
-
-////
-////    ("shoppingCart")
-////    public List<ProductCount> getShoppingCartList() {
-////        return shoppingCart.entrySet().stream()
-////                .map(entry -> new ProductCount(entry.getKey(), entry.getValue()))
-////                .collect(Collectors.toList());
-////    }
 }

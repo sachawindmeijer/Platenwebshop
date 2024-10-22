@@ -32,7 +32,7 @@ public class InvoiceMapper {
         dto.setVAT(invoice.getVAT());
         dto.setShippingCost(invoice.getShippingCost());
         dto.setDate(invoice.getDate());
-        dto.setCustomerName(invoice.getCustomer().getName());
+        dto.setCustomerName(invoice.getCustomer().getFirstName());
         dto.setOrderIds(invoice.getItems().stream()
                 .map(Order::getId)
                 .collect(Collectors.toList()));
