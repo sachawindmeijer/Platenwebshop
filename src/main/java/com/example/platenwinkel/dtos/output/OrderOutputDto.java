@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class OrderOutputDto {
 
     private Long id;
-    private Long customerId;
+    private String username;
     private LocalDate orderDate;
     private Double shippingCost;
     private int paymentStatus;
@@ -26,12 +26,12 @@ public class OrderOutputDto {
         this.id = id;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public LocalDate getOrderDate() {

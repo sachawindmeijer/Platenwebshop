@@ -3,30 +3,34 @@ package com.example.platenwinkel.service;
 import com.example.platenwinkel.dtos.input.InvoiceInputDto;
 import com.example.platenwinkel.dtos.mapper.InvoiceMapper;
 import com.example.platenwinkel.dtos.output.InvoiceOutputDto;
-import com.example.platenwinkel.models.Customer;
+
 import com.example.platenwinkel.models.Invoice;
 import com.example.platenwinkel.models.Order;
 
-import com.example.platenwinkel.repositories.CustomerRepository;
+
+import com.example.platenwinkel.models.User;
 import com.example.platenwinkel.repositories.InvoiceRepository;
 import com.example.platenwinkel.repositories.OrderRepository;
+import com.example.platenwinkel.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 
 import java.util.stream.Collectors;
 
 @Service
 public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
-    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
     private final OrderRepository orderRepository;
 
-    public InvoiceService(InvoiceRepository invoiceRepository, CustomerRepository customerRepository, OrderRepository orderRepository) {
+    public InvoiceService(InvoiceRepository invoiceRepository, UserRepository userRepository, OrderRepository orderRepository) {
         this.invoiceRepository = invoiceRepository;
-        this.customerRepository = customerRepository;
+        this.userRepository = userRepository;
         this.orderRepository = orderRepository;
     }
+
 
     public List<InvoiceOutputDto> getAllInvoices() {
         List<Invoice> invoices = invoiceRepository.findAll();
@@ -41,24 +45,18 @@ public class InvoiceService {
         return InvoiceMapper.fromInvoiceToOutputDto(invoice);
     }
 
-    public InvoiceOutputDto createInvoice(InvoiceInputDto invoiceInputDto) {
-        // Haal de klant op
-        Customer customer = customerRepository.findById(invoiceInputDto.getCustomerId())
-                .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
+    public InvoiceOutputDto createInvoice(InvoiceInputDto inputDto) {
+        User user = userRepository.findById(inputDto.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Haal de bijbehorende orders op
-        List<Order> orders = invoiceInputDto.getOrderIds().stream()
-                .map(orderId -> orderRepository.findById(orderId)
-                        .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId)))
-                .collect(Collectors.toList());
+        List<Order> orders = orderRepository.findAllById(inputDto.getOrderIds());
 
-        // Maak de Invoice aan en sla deze op
-        Invoice invoice = InvoiceMapper.fromInputDtoToModel(invoiceInputDto, customer, orders);
-        invoice = invoiceRepository.save(invoice);
+        Invoice invoice = InvoiceMapper.fromInputDtoToModel(inputDto, user, orders);
+        Invoice savedInvoice = invoiceRepository.save(invoice);
 
-        // Retourneer de output DTO
-        return InvoiceMapper.fromInvoiceToOutputDto(invoice);
+        return InvoiceMapper.fromInvoiceToOutputDto(savedInvoice);
     }
+
 
     public Invoice saveInvoice(Invoice invoice) {
         return invoiceRepository.save(invoice);
@@ -69,7 +67,7 @@ public class InvoiceService {
                 .orElseThrow(() -> new IllegalArgumentException("Invoice not found"));
 
         // Haal de klant en orders opnieuw op om te updaten
-        Customer customer = customerRepository.findById(inputDto.getCustomerId())
+        User user = userRepository.findById(inputDto.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
         List<Order> orders = inputDto.getOrderIds().stream()
                 .map(orderId -> orderRepository.findById(orderId)
@@ -81,7 +79,7 @@ public class InvoiceService {
         existingInvoice.setVAT(inputDto.getVAT());
         existingInvoice.setShippingCost(inputDto.getShippingCost());
         existingInvoice.setDate(inputDto.getDate());
-        existingInvoice.setCustomer(customer);
+        existingInvoice.setUser(user);
         existingInvoice.setItems(orders);
         existingInvoice.setTotalAmount(inputDto.getTotalAmount());
 

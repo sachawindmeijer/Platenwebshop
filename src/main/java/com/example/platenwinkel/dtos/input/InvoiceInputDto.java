@@ -5,11 +5,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class InvoiceInputDto {
+    private String username;
     public String invoiceNumber;
     public double VAT;
     public double shippingCost;
     public LocalDate date;
-    public Long customerId;
+    public Long UserId;
     public List<Long> orderIds;
     public Double totalAmount;
 
@@ -17,8 +18,8 @@ public class InvoiceInputDto {
         return orderIds;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public Long getUserId() {
+        return UserId;
     }
 
     public String getInvoiceNumber() {
@@ -39,5 +40,13 @@ public class InvoiceInputDto {
 
     public Double getTotalAmount() {
         return totalAmount;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

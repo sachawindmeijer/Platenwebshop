@@ -56,18 +56,18 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/lpproducts/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
-                                .requestMatchers(HttpMethod.POST,"/customers").hasRole("USER")
+//                                .requestMatchers(HttpMethod.POST,"/customers").hasRole("USER")
                                 .requestMatchers(HttpMethod.POST, "/orders").hasRole("USER")
 
                                 .requestMatchers(HttpMethod.GET, "/authenticated").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/orders/**").hasAnyRole("ADMIN","USER")
-                                .requestMatchers(HttpMethod.GET, "/invoices").hasAnyRole("ADMIN", "USER") // USERS can get all invoices
+                                .requestMatchers(HttpMethod.GET, "/invoices").hasAnyRole("ADMIN", "USER")
                                 .requestMatchers(HttpMethod.GET, "/invoices/**").hasAnyRole("ADMIN", "USER")
-                                .requestMatchers(HttpMethod.GET,"/customers/{id}").hasAnyRole("ADMIN","USER") // Alleen de ADMIN kan een klant verwijderen
+//                                .requestMatchers(HttpMethod.GET,"/customers/{id}").hasAnyRole("ADMIN","USER")
 
-                                .requestMatchers(HttpMethod.GET,"/customers/").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT,"/customers/{id}").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE,"/customers/{id}").hasRole("ADMIN")
+//                                .requestMatchers(HttpMethod.GET,"/customers/").hasRole("ADMIN")
+//                                .requestMatchers(HttpMethod.PUT,"/customers/{id}").hasRole("ADMIN")
+//                                .requestMatchers(HttpMethod.DELETE,"/customers/{id}").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")

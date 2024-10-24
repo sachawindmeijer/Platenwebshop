@@ -1,9 +1,9 @@
 package com.example.platenwinkel.dtos.input;
 
 import com.example.platenwinkel.enumeration.DeliveryStatus;
-import com.example.platenwinkel.models.Customer;
 import com.example.platenwinkel.models.LpProduct;
 import com.example.platenwinkel.models.Order;
+import com.example.platenwinkel.models.User;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 
 public class OrderInputDto {
 
-    public Long customerId;
+    public String username;
+    private Long invoiceId;
     public LocalDate orderDate;
     public Double shippingCost;
     public int paymentStatus;
@@ -20,8 +21,8 @@ public class OrderInputDto {
     public Map<Long, Integer> items; // Mapping product ID's to quantities
 
     public Order toOrder() {
-        Customer customer = new Customer();
-        customer.setId(customerId); // Assuming a valid customer ID is provided
+        User user = new User();
+        user.setUsername(username); // Assuming a valid customer ID is provided
 
         Map<LpProduct, Integer> productItems = items.entrySet().stream()
                 .collect(Collectors.toMap(
@@ -33,7 +34,7 @@ public class OrderInputDto {
                         Map.Entry::getValue
                 ));
 
-        return new Order(customer, orderDate, shippingCost, paymentStatus, deliveryStatus, shippingAdress, productItems);
+        return new Order(user, orderDate, shippingCost, paymentStatus, deliveryStatus, shippingAdress, productItems);
     }
 
 }
