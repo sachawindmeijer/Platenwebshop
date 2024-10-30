@@ -7,53 +7,56 @@ import java.time.LocalDate;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Entity
 @Table(name = "customer_order")
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "username", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "invoice_id", nullable = false)
-    private Invoice invoice;
-
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
+    private List<LpProduct> products;  // Lijst van bestelde producten
     @Column(nullable = false)
     private LocalDate orderDate;
+    private Double shippingCost;
+    private int paymentStatus; // 0 = not paid, 1 = paid
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus deliveryStatus;
 
     @Column(nullable = false)
-    private Double shippingCost;
-
-    private int paymentStatus; // 0 = not paid, 1 = paid
-    private DeliveryStatus deliveryStatus;
     private String shippingAdress;
 
-    @ElementCollection
-    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
-    @MapKeyJoinColumn(name = "lpproduct_id")
-    @Column(name = "quantity")
+    @ElementCollection // Geeft aan dat de items-collectie geen aparte entiteit is, maar onderdeel van de Order-entiteit.
+    @CollectionTable(
+            name = "order_items", // De naam van de tabel waarin de collectie wordt opgeslagen.
+            joinColumns = @JoinColumn(name = "order_id") // De kolom die de relatie met de Order-entiteit aangeeft.
+    )
+    @MapKeyJoinColumn(name = "lpproduct_id") // Geeft aan dat de sleutel in de Map een verwijzing is naar een LpProduct.
+    @Column(name = "quantity") // Geeft aan dat de waarde van de Map (Integer) als "quantity" wordt opgeslagen.
     private Map<LpProduct, Integer> items = new HashMap<>();
 
     private static final double FREE_SHIPPING_THRESHOLD = 50.00;
     private static final double STANDARD_SHIPPING_COST = 6.85;
 
-    public Order() {}
+    public Order() {
+    }
 
-    public Order(User user, LocalDate orderDate, Double shippingCost, int paymentStatus, DeliveryStatus deliveryStatus, String shippingAdress, Map<LpProduct, Integer> items) {
+    public Order(User user, LocalDate orderDate, int paymentStatus, DeliveryStatus deliveryStatus, String shippingAdress, Map<LpProduct, Integer> items) {
         this.user = user;
         this.orderDate = orderDate;
-        this.shippingCost = shippingCost;
         this.paymentStatus = paymentStatus;
         this.deliveryStatus = deliveryStatus;
         this.shippingAdress = shippingAdress;
         this.items = items;
-        calculateAndSetShippingCost();
     }
 
     public double getTotalOrderAmount() {
@@ -64,11 +67,7 @@ public class Order {
 
     public void calculateAndSetShippingCost() {
         double totalAmount = getTotalOrderAmount();
-        if (totalAmount > FREE_SHIPPING_THRESHOLD) {
-            this.shippingCost = 0.00; // Gratis verzending
-        } else {
-            this.shippingCost = STANDARD_SHIPPING_COST; // Standaard verzendkosten
-        }
+        this.shippingCost = totalAmount > FREE_SHIPPING_THRESHOLD ? 0.00 : STANDARD_SHIPPING_COST;
     }
 
     public double getTotalCost() {
@@ -82,6 +81,14 @@ public class Order {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setItems(Map<LpProduct, Integer> items) {
+        this.items = items;
+    }
+
+    public Map<LpProduct, Integer> getItems() {
+        return items;
     }
 
     public User getUser() {
@@ -132,13 +139,6 @@ public class Order {
         this.shippingAdress = shippingAdress;
     }
 
-    public Map<LpProduct, Integer> getItems() {
-        return items;
-    }
-
-    public void setItems(Map<LpProduct, Integer> items) {
-        this.items = items;
-    }
 
     @Override
     public String toString() {
@@ -150,11 +150,5 @@ public class Order {
                 '}';
     }
 
-    public Invoice getInvoice() {
-        return invoice;
-    }
 
-    public void setInvoice(Invoice invoice) {
-        this.invoice = invoice;
-    }
 }

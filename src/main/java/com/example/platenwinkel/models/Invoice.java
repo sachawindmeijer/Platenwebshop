@@ -4,47 +4,59 @@ package com.example.platenwinkel.models;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.List;
+
 
 //vertegenwoordigt een volledige factuur
 @Entity
+@Table(name = "Invoice")
 public class Invoice {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String invoiceNumber;
-    private double VAT;
-    private double shippingCost;
 
-//    @Temporal(TemporalType.DATE)
+    @OneToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order; // Verwijzing naar de bestelling waarvoor deze factuur is
+    @Column(nullable = false, unique = true)
+    private String invoiceNumber;
+    @Column(nullable = false)
+    private double VAT;
+
     @Column(nullable = false)
     private LocalDate date;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private LocalDate invoiceDate;
+    private double amountExclVat; // Bedrag exclusief BTW
+    private double vatAmount; // BTW bedrag
+    private double amountInclVat; // Bedrag inclusief BTW
 
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
-    private List<Order> items;
-
-    @Column(nullable = false)
-    private double totalAmount;
 
     // Default constructor
     public Invoice(){}
 
-    public Invoice(String invoiceNumber, LocalDate date, User user, Double totalAmount) {
+    public Invoice(Order order, String invoiceNumber, double VAT) {
+        this.order = order;
         this.invoiceNumber = invoiceNumber;
-        this.date = date;
-        this.user = user;
-        this.totalAmount = totalAmount;
+        this.VAT = VAT;
+        this.invoiceDate = LocalDate.now();
+        calculateAmounts();
     }
-    public void setId(Long id) {
-        this.id = id;
+    public void calculateAmounts() {
+        this.amountExclVat = order.getTotalOrderAmount();
+        this.vatAmount = amountExclVat * (VAT / 100);
+        this.amountInclVat = amountExclVat + vatAmount;
     }
-
     public Long getId() {
         return id;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public String getInvoiceNumber() {
@@ -63,14 +75,6 @@ public class Invoice {
         this.VAT = VAT;
     }
 
-    public double getShippingCost() {
-        return shippingCost;
-    }
-
-    public void setShippingCost(double shippingCost) {
-        this.shippingCost = shippingCost;
-    }
-
     public LocalDate getDate() {
         return date;
     }
@@ -79,27 +83,47 @@ public class Invoice {
         this.date = date;
     }
 
-    public User getUser() {
-        return user;
+    public LocalDate getInvoiceDate() {
+        return invoiceDate;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setInvoiceDate(LocalDate invoiceDate) {
+        this.invoiceDate = invoiceDate;
     }
 
-    public List<Order> getItems() {
-        return items;
+    public double getAmountExclVat() {
+        return amountExclVat;
     }
 
-    public void setItems(List<Order> items) {
-        this.items = items;
+    public void setAmountExclVat(double amountExclVat) {
+        this.amountExclVat = amountExclVat;
     }
 
-    public Double getTotalAmount() {
-        return totalAmount;
+    public double getVatAmount() {
+        return vatAmount;
     }
 
-    public void setTotalAmount(Double totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setVatAmount(double vatAmount) {
+        this.vatAmount = vatAmount;
     }
+
+    public double getAmountInclVat() {
+        return amountInclVat;
+    }
+
+    public void setAmountInclVat(double amountInclVat) {
+        this.amountInclVat = amountInclVat;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Invoice{" +
+                "orderId=" + order.getId() +
+                ", invoiceNumber='" + invoiceNumber + '\'' +
+                ", VAT=" + VAT +
+                ", amountInclVat=" + amountInclVat +
+                '}';
+    }
+
 }

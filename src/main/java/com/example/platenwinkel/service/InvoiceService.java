@@ -14,6 +14,7 @@ import com.example.platenwinkel.repositories.OrderRepository;
 import com.example.platenwinkel.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -45,48 +46,38 @@ public class InvoiceService {
         return InvoiceMapper.fromInvoiceToOutputDto(invoice);
     }
 
-    public InvoiceOutputDto createInvoice(InvoiceInputDto inputDto) {
-        User user = userRepository.findById(inputDto.getUsername())
+    public InvoiceOutputDto createInvoice(InvoiceInputDto inputDto, String username, Long orderId) {
+        User user = userRepository.findById(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        List<Order> orders = orderRepository.findAllById(inputDto.getOrderIds());
-
-        Invoice invoice = InvoiceMapper.fromInputDtoToModel(inputDto, user, orders);
+        if (invoiceRepository.existsByOrderId(orderId)) {
+            throw new RuntimeException("An invoice already exists for this order.");
+        }
+        Invoice invoice = InvoiceMapper.fromInputDtoToModel(inputDto, user, order);
+        invoice.setDate(LocalDate.now());
         Invoice savedInvoice = invoiceRepository.save(invoice);
 
         return InvoiceMapper.fromInvoiceToOutputDto(savedInvoice);
     }
 
 
-    public Invoice saveInvoice(Invoice invoice) {
-        return invoiceRepository.save(invoice);
-    }
+//    public Invoice saveInvoice(Invoice invoice) {
+//        return invoiceRepository.save(invoice);
+//    }
 
     public InvoiceOutputDto updateInvoice(Long id, InvoiceInputDto inputDto) {
         Invoice existingInvoice = invoiceRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invoice not found"));
-
-        // Haal de klant en orders opnieuw op om te updaten
-        User user = userRepository.findById(inputDto.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
-        List<Order> orders = inputDto.getOrderIds().stream()
-                .map(orderId -> orderRepository.findById(orderId)
-                        .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId)))
-                .collect(Collectors.toList());
-
-        // Update de bestaande factuur
+                .orElseThrow(() -> new RuntimeException("Invoice not found"));
         existingInvoice.setInvoiceNumber(inputDto.getInvoiceNumber());
         existingInvoice.setVAT(inputDto.getVAT());
-        existingInvoice.setShippingCost(inputDto.getShippingCost());
-        existingInvoice.setDate(inputDto.getDate());
-        existingInvoice.setUser(user);
-        existingInvoice.setItems(orders);
-        existingInvoice.setTotalAmount(inputDto.getTotalAmount());
+        existingInvoice.setInvoiceDate(LocalDate.now()); // or use invoiceInputDto.getInvoiceDate() if available
+        existingInvoice.calculateAmounts(); // Recalculate amounts based on updated VAT or other fields
 
-        // Sla de updates op
-        invoiceRepository.save(existingInvoice);
+        Invoice updatedInvoice = invoiceRepository.save(existingInvoice);
+        return InvoiceMapper.fromInvoiceToOutputDto(updatedInvoice);
 
-        return InvoiceMapper.fromInvoiceToOutputDto(existingInvoice);
     }
     public void deleteInvoice(Long id) {
         if (!invoiceRepository.existsById(id)) {

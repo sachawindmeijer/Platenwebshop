@@ -35,8 +35,6 @@ public class LpProduct {
     private Genre genre;
     private int inStock; // dit aanpassen in het klassen diagram
 
-//    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
-    //private Report inventory;
 
 //    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
 //     private Promotion promotion;
@@ -59,6 +57,10 @@ public class LpProduct {
 
 //    List <Image> images;
     //
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getArtist() {
         return artist;
@@ -112,11 +114,6 @@ public class LpProduct {
     public Long getId() {
         return id;
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public LocalDate getReleaseDate() {
         return releaseDate;
     }

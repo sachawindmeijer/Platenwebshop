@@ -4,16 +4,22 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class InvoiceOutputDto {
-    public Long id;
-    public String invoiceNumber;
-    public double VAT;
-    public double shippingCost;
-    public LocalDate date;
-    public String customerName;
-    public List<Long> orderIds;
-    public Double totalAmount;
+    private Long id;
+    private String invoiceNumber;
+    private Long orderId;
+    private LocalDate invoiceDate;
+    private double VAT;
+    private double amountExclVat;
+    private double vatAmount;
+    private double amountInclVat;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getInvoiceNumber() {
         return invoiceNumber;
@@ -21,6 +27,22 @@ public class InvoiceOutputDto {
 
     public void setInvoiceNumber(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public LocalDate getInvoiceDate() {
+        return invoiceDate;
+    }
+
+    public void setInvoiceDate(LocalDate invoiceDate) {
+        this.invoiceDate = invoiceDate;
     }
 
     public double getVAT() {
@@ -31,43 +53,27 @@ public class InvoiceOutputDto {
         this.VAT = VAT;
     }
 
-    public double getShippingCost() {
-        return shippingCost;
+    public double getAmountExclVat() {
+        return amountExclVat;
     }
 
-    public void setShippingCost(double shippingCost) {
-        this.shippingCost = shippingCost;
+    public void setAmountExclVat(double amountExclVat) {
+        this.amountExclVat = amountExclVat;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public double getVatAmount() {
+        return vatAmount;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setVatAmount(double vatAmount) {
+        this.vatAmount = vatAmount;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public double getAmountInclVat() {
+        return amountInclVat;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public List<Long> getOrderIds() {
-        return orderIds;
-    }
-
-    public void setOrderIds(List<Long> orderIds) {
-        this.orderIds = orderIds;
-    }
-
-    public Double getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(Double totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setAmountInclVat(double amountInclVat) {
+        this.amountInclVat = amountInclVat;
     }
 }
