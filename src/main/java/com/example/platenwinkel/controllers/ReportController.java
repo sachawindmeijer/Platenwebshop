@@ -2,7 +2,6 @@ package com.example.platenwinkel.controllers;
 
 import com.example.platenwinkel.dtos.input.ReportInputDto;
 import com.example.platenwinkel.dtos.output.ReportOutputDto;
-import com.example.platenwinkel.models.Report;
 import com.example.platenwinkel.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,30 +21,42 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<ReportOutputDto>> getAllReports() {
-        List<ReportOutputDto> reports = reportService.getAllReports();
-        return new ResponseEntity<>(reports, HttpStatus.OK);
+
+    @PostMapping
+    public ResponseEntity<ReportOutputDto> createReport(@RequestBody ReportInputDto reportInputDto) {
+        ReportOutputDto createdReport = reportService.createReport(reportInputDto);
+        return new ResponseEntity<>(createdReport, HttpStatus.CREATED);
     }
+@GetMapping
+public ResponseEntity<List<ReportOutputDto>>getAllReports(){
+
+        return ResponseEntity.ok(reportService.getAllReports());
+}
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ReportOutputDto> getReportById(@PathVariable Long id) {
-        ReportOutputDto report = reportService.getReportById(id);
-        return new ResponseEntity<>(report, HttpStatus.OK);
+        try {
+            ReportOutputDto report = reportService.getReportById(id);
+            return ResponseEntity.ok(report);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
-    @PostMapping("/{productId}")
-    public  ResponseEntity<ReportOutputDto> createReport(
-            @PathVariable Long productId,
-            @RequestBody ReportInputDto reportInputDto) {
-        ReportOutputDto newReport = reportService.createReport(reportInputDto, productId);
-        return new ResponseEntity<>(newReport, HttpStatus.CREATED);
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReport(@PathVariable Long id) {
-        reportService.deleteReport(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            boolean isDeleted = reportService.deleteReport(id);
+            if (isDeleted) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }
 

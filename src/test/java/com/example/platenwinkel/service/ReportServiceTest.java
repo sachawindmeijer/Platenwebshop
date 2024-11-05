@@ -1,11 +1,15 @@
 package com.example.platenwinkel.service;
 
+
 import com.example.platenwinkel.dtos.input.ReportInputDto;
 import com.example.platenwinkel.dtos.output.ReportOutputDto;
+import com.example.platenwinkel.enumeration.DeliveryStatus;
 import com.example.platenwinkel.enumeration.Genre;
 import com.example.platenwinkel.models.LpProduct;
+import com.example.platenwinkel.models.Order;
 import com.example.platenwinkel.models.Report;
 import com.example.platenwinkel.repositories.LpProductRepository;
+import com.example.platenwinkel.repositories.OrderRepository;
 import com.example.platenwinkel.repositories.ReportRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,12 +19,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,60 +37,65 @@ class ReportServiceTest {
     @Mock
     private LpProductRepository lpProductRepository;
 
+    @Mock
+    private OrderRepository orderRepository;
+
     @InjectMocks
     private ReportService reportService;
 
     @Test
-    @DisplayName("should return all reports")
-    void getAllReports() {
-        // Arrange
+    @DisplayName("should generate a sales report with top and low selling products")
+    void createReport() {
+        // Arrange: Create input DTO and mock product data
+        ReportInputDto reportInputDto = new ReportInputDto();
+        reportInputDto.setComment("Monthly Sales Report"); // Ensure this is set
+
         LpProduct lpProduct1 = new LpProduct(1L, "The Beatles", "Abbey Road", "Classic album from 1969", Genre.ROCK, 10, 16.80);
         LpProduct lpProduct2 = new LpProduct(2L, "Pink Floyd", "The Wall", "Legendary album from 1979", Genre.ROCK, 5, 18.50);
 
-        Report report1 = new Report();
-        report1.setId(1L);  // Set the ID
-        report1.setLpProduct(lpProduct1);
-        report1.setVoorraadAantal(50);
-        report1.setVerkochtAantal(20);
-        report1.setRapportDatum(LocalDateTime.now());
+        // Create orders with items and quantities
+        Map<LpProduct, Integer> order1Items = new HashMap<>();
+        order1Items.put(lpProduct1, 15); // High sales for lpProduct1
 
-        Report report2 = new Report();
-        report2.setId(2L);  // Set the ID
-        report2.setLpProduct(lpProduct2);
-        report2.setVoorraadAantal(30);
-        report2.setVerkochtAantal(10);
-        report2.setRapportDatum(LocalDateTime.now().minusDays(1));
+        Map<LpProduct, Integer> order2Items = new HashMap<>();
+        order2Items.put(lpProduct2, 5); // Low sales for lpProduct2
 
-        List<Report> reports = List.of(report1, report2);
+        Order order1 = new Order(null, LocalDate.now(), 1, DeliveryStatus.SHIPPED, "123 Music Ave", order1Items);
+        Order order2 = new Order(null, LocalDate.now(), 1, DeliveryStatus.SHIPPED, "456 Melody Rd", order2Items);
 
-        when(reportRepository.findAll()).thenReturn(reports);
+        List<Order> orders = List.of(order1, order2);
 
-        // Act
-        List<ReportOutputDto> result = reportService.getAllReports();
+        // Mocking order repository to return the orders
+        when(orderRepository.findAll()).thenReturn(orders);
 
-        // Assert
-        assertEquals(2, result.size());
-        assertNotNull(result);
+        // Mocking report repository to return a saved report
+        Report savedReport = new Report(List.of(lpProduct1), List.of(lpProduct2), 344.5);
+        savedReport.setComment("Monthly Sales Report"); // Ensure the saved report has the comment set
+        when(reportRepository.save(any(Report.class))).thenReturn(savedReport);
 
-        // Assertions for the first report
-        assertEquals(1L, result.get(0).getId());
-        assertEquals(1L, result.get(0).getProductId()); // Product ID
-        assertEquals("The Beatles", result.get(0).getArtist());
-        assertEquals("Abbey Road", result.get(0).getAlbum());
-        assertEquals(50, result.get(0).getVoorraadAantal());
-        assertEquals(20, result.get(0).getVerkochtAantal());
-        assertNotNull(result.get(0).getRapportDatum());
+        // Act: Create the report
+        ReportOutputDto result = reportService.createReport(reportInputDto);
 
-        // Assertions for the second report
-        assertEquals(2L, result.get(1).getId());
-        assertEquals(2L, result.get(1).getProductId()); // Product ID
-        assertEquals("Pink Floyd", result.get(1).getArtist());
-        assertEquals("The Wall", result.get(1).getAlbum());
-        assertEquals(30, result.get(1).getVoorraadAantal());
-        assertEquals(10, result.get(1).getVerkochtAantal());
-        assertNotNull(result.get(1).getRapportDatum());
+        // Assert: Check that the report is not null and has correct data
+        assertNotNull(result, "ReportOutputDto should not be null");
+
+        // Check total revenue
+        double expectedTotalRevenue = (15 * 16.80) + (5 * 18.50);
+        assertEquals(expectedTotalRevenue, result.getTotalRevenue(), 0.01, "Total revenue should be correctly calculated");
+
+        // Check top-selling products
+        assertEquals(1, result.getTopSellingProducts().size(), "There should be 1 top-selling product");
+        assertEquals("The Beatles", result.getTopSellingProducts().get(0).getArtist(), "Top-selling product should be 'The Beatles'");
+        assertEquals("Abbey Road", result.getTopSellingProducts().get(0).getAlbum(), "Top-selling product album should be 'Abbey Road'");
+
+        // Check low-selling products
+        assertEquals(1, result.getLowSellingProducts().size(), "There should be 1 low-selling product");
+        assertEquals("Pink Floyd", result.getLowSellingProducts().get(0).getArtist(), "Low-selling product should be 'Pink Floyd'");
+        assertEquals("The Wall", result.getLowSellingProducts().get(0).getAlbum(), "Low-selling product album should be 'The Wall'");
+
+        // Check report comment
+        assertEquals(reportInputDto.getComment(), result.getComment(), "The report comment should match the input DTO comment");
     }
-
     @Test
     @DisplayName("should return report by id")
     void getReportById() {
@@ -97,8 +107,12 @@ class ReportServiceTest {
         lpProduct.setArtist("Artist Name"); // Set the artist name
         lpProduct.setAlbum("Album Name"); // Set the album name
 
+        List<LpProduct> topSellingProducts = List.of(lpProduct);
+        List<LpProduct> lowSellingProducts = List.of();
+        double totalRevenue = 150.0;
+        LocalDate generatedDate = LocalDate.now();
 
-        Report report = new Report( lpProduct, 110, 40, LocalDateTime.now ());
+        Report report = new Report(topSellingProducts, lowSellingProducts, totalRevenue);
         report.setId(id);
 
         when(reportRepository.findById(id)).thenReturn(Optional.of(report));
@@ -109,12 +123,11 @@ class ReportServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals(id, result.getId());
-        assertEquals(lpProduct.getId(), result.getProductId()); // Assert the product ID
-        assertEquals(lpProduct.getArtist(), result.getArtist()); // Assert the artist name
-        assertEquals(lpProduct.getAlbum(), result.getAlbum()); // Assert the album name
-        assertEquals(report.getVoorraadAantal(), result.getVoorraadAantal()); // Assert voorraad aantal
-        assertEquals(report.getVerkochtAantal(), result.getVerkochtAantal()); // Assert verkocht aantal
-        assertEquals(report.getRapportDatum(), result.getRapportDatum()); // Assert rapport datum
+        assertEquals(2L, result.getTopSellingProducts().get(0).getId()); // Assert product ID
+        assertEquals("Artist Name", result.getTopSellingProducts().get(0).getArtist()); // Assert artist name
+        assertEquals("Album Name", result.getTopSellingProducts().get(0).getAlbum()); // Assert album name
+        assertEquals(totalRevenue, result.getTotalRevenue(), 0.01); // Assert total revenue
+        assertEquals(generatedDate, result.getRapportDatum()); // Assert generated date
     }
 
     @Test
@@ -132,53 +145,6 @@ class ReportServiceTest {
         assertEquals("Report not found with id: " + id, exception.getMessage());
     }
 
-    @Test
-    @DisplayName("should create report")
-    void createReport() {
-        // Arrange
-        ReportInputDto reportInputDto = new ReportInputDto();
-        reportInputDto.setVoorraadAantal(100);
-        reportInputDto.setVerkochtAantal(50);
-        reportInputDto.setRapportDatum(LocalDateTime.now());
-
-
-        Long productId = 1L;
-        LpProduct lpProduct = new LpProduct(productId, "Madonna", "Like a Virgin", "is top pop", Genre.POP, 6, 19.99);
-        when(lpProductRepository.findById(productId)).thenReturn(Optional.of(lpProduct));
-
-        Report report = new Report(lpProduct, reportInputDto.getVoorraadAantal(), reportInputDto.getVerkochtAantal(), reportInputDto.getRapportDatum());
-        when(reportRepository.save(any(Report.class))).thenReturn(report);
-
-        // Act
-        ReportOutputDto result = reportService.createReport(reportInputDto, productId);
-
-        // Assert
-        assertNotNull(result);
-        assertNotNull(result);
-        assertEquals(report.getId(), result.getId());
-        assertEquals(lpProduct.getId(), result.getProductId());
-        assertEquals(lpProduct.getArtist(), result.getArtist());
-        assertEquals(lpProduct.getAlbum(), result.getAlbum());
-        assertEquals(report.getVoorraadAantal(), result.getVoorraadAantal());
-        assertEquals(report.getVerkochtAantal(), result.getVerkochtAantal());
-        assertEquals(report.getRapportDatum(), result.getRapportDatum());
-    }
-
-    @Test
-    @DisplayName("should throw exception when creating report with non-existent product")
-    void createReport_ProductNotFound() {
-        // Arrange
-        ReportInputDto reportInputDto = new ReportInputDto(/* set fields */);
-        Long productId = 99L;
-        when(lpProductRepository.findById(productId)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            reportService.createReport(reportInputDto, productId);
-        });
-
-        assertEquals("Product not found with id: " + productId, exception.getMessage());
-    }
 
     @Test
     @DisplayName("should delete report")
