@@ -33,3 +33,20 @@ INSERT INTO Invoice (order_id, invoice_number, VAT, date, invoice_date, amount_e
 VALUES   (1, 'INV10001', 21.0, '2024-10-29', '2024-10-29', 100.00, 21.00, 121.00),
         (2, 'INV10002', 21.0, '2024-10-29', '2024-10-29', 200.00, 42.00, 242.00),
          (3, 'INV10003', 9.0, '2024-10-29', '2024-10-29', 150.00, 13.50, 163.50);
+
+INSERT INTO report (comment, rapport_datum, total_revenue)
+VALUES
+        ('Monthly Sales Report', CURRENT_DATE, 0.0),
+        ('Weekly Sales Summary', CURRENT_DATE, 0.0),
+        ('Annual Performance Review', CURRENT_DATE, 0.0);
+
+INSERT INTO report_top_selling_products (report_id, lpproduct_id)
+VALUES
+    (1, 3),
+    (2, 4);  -- Corrected missing semicolon
+
+-- Insert low-selling products
+INSERT INTO report_low_selling_products (report_id, lp_product_id)
+VALUES
+    (1, 6),
+    (3, 5);

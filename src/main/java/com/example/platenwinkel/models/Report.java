@@ -31,7 +31,7 @@ public class Report {
     )
     private List<LpProduct> lowSellingProducts;
 
-    private double totalRevenue;
+    private Double totalRevenue;
 
     public Report() {
         this.rapportDatum = LocalDate.now();
