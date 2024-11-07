@@ -1,15 +1,28 @@
 package com.example.platenwinkel.dtos.output;
 
+import com.example.platenwinkel.models.LpProduct;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ReportOutputDto {
     private Long id;
-    private Long productId;
-    private String artist;
-    public String album;
-    private int voorraadAantal;
-    private int verkochtAantal;
-    private LocalDateTime rapportDatum;
+    private List<LpProduct> topSellingProducts;
+    private List<LpProduct> lowSellingProducts;
+    private double totalRevenue;
+    private LocalDate rapportDatum;
+    private String comment;
+
+    public ReportOutputDto(List<LpProduct> topSellingProducts, List<LpProduct> lowSellingProducts, double totalRevenue) {
+        this.topSellingProducts = topSellingProducts;
+        this.lowSellingProducts = lowSellingProducts;
+        this.totalRevenue = totalRevenue;
+    }
+
+    public ReportOutputDto() {
+
+    }
 
     public Long getId() {
         return id;
@@ -19,53 +32,43 @@ public class ReportOutputDto {
         this.id = id;
     }
 
-    public Long getProductId() {
-        return productId;
+    public List<LpProduct> getTopSellingProducts() {
+        return topSellingProducts;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setTopSellingProducts(List<LpProduct> topSellingProducts) {
+        this.topSellingProducts = topSellingProducts;
     }
 
-    public String getArtist() {
-        return artist;
+    public List<LpProduct> getLowSellingProducts() {
+        return lowSellingProducts;
     }
 
-    public void setArtist(String artist) {
-        this.artist = artist;
+    public void setLowSellingProducts(List<LpProduct> lowSellingProducts) {
+        this.lowSellingProducts = lowSellingProducts;
     }
 
-    public String getAlbum() {
-        return album;
+    public double getTotalRevenue() {
+        return totalRevenue;
     }
 
-    public void setAlbum(String album) {
-        this.album = album;
+    public void setTotalRevenue(double totalRevenue) {
+        this.totalRevenue = totalRevenue;
     }
 
-    public int getVoorraadAantal() {
-        return voorraadAantal;
+    public String getComment() {
+        return comment;
     }
 
-    public void setVoorraadAantal(int voorraadAantal) {
-        this.voorraadAantal = voorraadAantal;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
-    public int getVerkochtAantal() {
-        return verkochtAantal;
-    }
-
-    public void setVerkochtAantal(int verkochtAantal) {
-        this.verkochtAantal = verkochtAantal;
-    }
-
-    public LocalDateTime getRapportDatum() {
+    public LocalDate getRapportDatum() {
         return rapportDatum;
     }
 
-    public void setRapportDatum(LocalDateTime rapportDatum) {
+    public void setRapportDatum(LocalDate rapportDatum) {
         this.rapportDatum = rapportDatum;
     }
-
-
 }

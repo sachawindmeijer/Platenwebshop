@@ -5,10 +5,12 @@ import com.example.platenwinkel.dtos.mapper.OrderMapper;
 import com.example.platenwinkel.dtos.output.LpProductOutputDto;
 import com.example.platenwinkel.dtos.output.OrderOutputDto;
 import com.example.platenwinkel.exceptions.InvalidInputException;
+import com.example.platenwinkel.exceptions.RecordNotFoundException;
 import com.example.platenwinkel.helper.BindingResultHelper;
 import com.example.platenwinkel.models.Order;
 import com.example.platenwinkel.service.OrderService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/order")
+@RequestMapping(value = "/orders")
 public class OrderController {
 
     private final OrderService orderService;
@@ -43,11 +45,12 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderOutputDto> createOrder(@Valid @RequestBody OrderInputDto orderInputDto, BindingResult bindingResult) {
+    public ResponseEntity<OrderOutputDto> createOrder( @RequestBody OrderInputDto orderInputDto, BindingResult bindingResult) {
+        String username = orderInputDto.getUsername();
         if (bindingResult.hasErrors()) {
             throw new InvalidInputException("Somthing went wrong, please check the following fields. " + BindingResultHelper.getErrorMessage(bindingResult));
         }
-        OrderOutputDto order= orderService.createOrder(orderInputDto);
+        OrderOutputDto order= orderService.createOrder(orderInputDto, username);
 
         URI uri = URI.create(
                 ServletUriComponentsBuilder
@@ -60,11 +63,13 @@ public class OrderController {
 
     @PutMapping("/{id}")
     public ResponseEntity<OrderOutputDto> updateOrder(@PathVariable Long id, @RequestBody OrderInputDto orderInputDto) {
-        Order updatedOrder = orderService.updateOrder(id, orderInputDto.toOrder());
-        if (updatedOrder != null) {
-            return ResponseEntity.ok(OrderMapper.fromOrderToOutputDto(updatedOrder));
+        try {
+            OrderOutputDto updatedOrderOutputDto = orderService.updateOrder(id, orderInputDto);
+            return ResponseEntity.ok(updatedOrderOutputDto);
+        } catch (RecordNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return ResponseEntity.notFound().build();
+
     }
 
     @DeleteMapping("/{id}")

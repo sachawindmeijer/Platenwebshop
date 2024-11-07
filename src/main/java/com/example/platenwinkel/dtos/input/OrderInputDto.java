@@ -1,39 +1,80 @@
 package com.example.platenwinkel.dtos.input;
 
 import com.example.platenwinkel.enumeration.DeliveryStatus;
-import com.example.platenwinkel.models.Customer;
-import com.example.platenwinkel.models.LpProduct;
-import com.example.platenwinkel.models.Order;
+
+
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 public class OrderInputDto {
 
-    public Long customerId;
+    @NotNull(message = "Username is required")
+    public String username;
+    @NotNull(message = "Order date is required")
     public LocalDate orderDate;
     public Double shippingCost;
-    public int paymentStatus;
+    public int paymentStatus;// 0 = not paid, 1 = paid
     public DeliveryStatus deliveryStatus;
+    @NotNull(message = "Shipping address is required")
     public String shippingAdress;
     public Map<Long, Integer> items; // Mapping product ID's to quantities
 
-    public Order toOrder() {
-        Customer customer = new Customer();
-        customer.setId(customerId); // Assuming a valid customer ID is provided
-
-        Map<LpProduct, Integer> productItems = items.entrySet().stream()
-                .collect(Collectors.toMap(
-                        entry -> {
-                            LpProduct product = new LpProduct();
-                            product.setId(entry.getKey());
-                            return product;
-                        },
-                        Map.Entry::getValue
-                ));
-
-        return new Order(customer, orderDate, shippingCost, paymentStatus, deliveryStatus, shippingAdress, productItems);
+    public String getUsername() {
+        return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public LocalDate getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public Double getShippingCost() {
+        return shippingCost;
+    }
+
+    public void setShippingCost(Double shippingCost) {
+        this.shippingCost = shippingCost;
+    }
+
+    public int getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(int paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public DeliveryStatus getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
+
+    public String getShippingAdress() {
+        return shippingAdress;
+    }
+
+    public void setShippingAdress(String shippingAdress) {
+        this.shippingAdress = shippingAdress;
+    }
+
+    public Map<Long, Integer> getItems() {
+        return items;
+    }
+
+    public void setItems(Map<Long, Integer> items) {
+        this.items = items;
+    }
 }

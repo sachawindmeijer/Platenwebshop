@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/invoice")
+@RequestMapping(value = "/invoices")
 public class InvoiceController {
     private final InvoiceService invoiceService;
 
@@ -33,8 +33,9 @@ public class InvoiceController {
     }
 
     @PostMapping
-    public ResponseEntity<InvoiceOutputDto>createInvoice(@RequestBody InvoiceInputDto invoiceInputDto) {
-        InvoiceOutputDto createdInvoice = invoiceService.createInvoice(invoiceInputDto);
+    public ResponseEntity<InvoiceOutputDto>createInvoice(@RequestBody InvoiceInputDto invoiceInputDto,  @RequestParam String username,
+                                                         @RequestParam Long orderId) {
+        InvoiceOutputDto createdInvoice = invoiceService.createInvoice(invoiceInputDto, username, orderId);
         return new ResponseEntity<>(createdInvoice, HttpStatus.CREATED);
     }
 

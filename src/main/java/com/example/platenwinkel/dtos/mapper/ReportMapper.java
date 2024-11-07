@@ -6,39 +6,33 @@ import com.example.platenwinkel.dtos.output.ReportOutputDto;
 import com.example.platenwinkel.models.LpProduct;
 import com.example.platenwinkel.models.Report;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class ReportMapper {
 
-    public static Report fromInputDtoToMode(ReportInputDto reportInputDto, LpProduct lpProduct) {
-        if (reportInputDto == null) {
-            return null;
-        }
-        return new Report(
-                lpProduct,
-                reportInputDto.getVoorraadAantal(),
-                reportInputDto.getVerkochtAantal(),
-                reportInputDto.getRapportDatum()
+    public static Report fromInputDtoToMode(ReportInputDto inputDto, List<LpProduct> topSellingProducts, List<LpProduct> lowSellingProducts, double totalRevenue) {
+        Report report = new Report(
+                topSellingProducts,
+                lowSellingProducts,
+                totalRevenue
         );
+        report.setComment(inputDto.getComment());
+        return report;
     }
 
     public static ReportOutputDto fromModelToOutputDto(Report report) {
-        if (report == null) {
-            return null;
-        }
+        ReportOutputDto outputDto = new ReportOutputDto(
+                report.getTopSellingProducts(),
+                report.getLowSellingProducts(),
+                report.getTotalRevenue()
+        );
 
-        ReportOutputDto reportOutputDto = new ReportOutputDto();
-        reportOutputDto.setId(report.getId());
+        outputDto.setId(report.getId());
+        outputDto.setRapportDatum(LocalDate.from(LocalDateTime.now()));
+        outputDto.setComment(report.getComment());
 
-        // Set productId from LpProduct's id
-        reportOutputDto.setProductId(report.getLpProduct().getId());
-
-        // Optional: Set the product name if you want
-        reportOutputDto.setArtist(report.getLpProduct().getArtist());
-        reportOutputDto.setAlbum(report.getLpProduct().getAlbum());
-
-        reportOutputDto.setVoorraadAantal(report.getVoorraadAantal());
-        reportOutputDto.setVerkochtAantal(report.getVerkochtAantal());
-        reportOutputDto.setRapportDatum(report.getRapportDatum());
-
-        return reportOutputDto;
+        return outputDto;
     }
 }

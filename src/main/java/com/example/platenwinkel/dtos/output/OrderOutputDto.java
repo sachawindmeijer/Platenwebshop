@@ -10,13 +10,28 @@ import java.util.stream.Collectors;
 public class OrderOutputDto {
 
     private Long id;
-    private Long customerId;
+    private String username;
     private LocalDate orderDate;
     private Double shippingCost;
     private int paymentStatus;
     private DeliveryStatus deliveryStatus;
     private String shippingAdress;
     private Map<Long, Integer> items; // Mapping product ID's to quantities
+    private double totalCost;
+
+    public OrderOutputDto() {}
+
+    public OrderOutputDto(Long id, String username, LocalDate orderDate, Double shippingCost, int paymentStatus, DeliveryStatus deliveryStatus, String shippingAdress, Map<Long, Integer> items, double totalCost) {
+        this.id = id;
+        this.username = username;
+        this.orderDate = orderDate;
+        this.shippingCost = shippingCost;
+        this.paymentStatus = paymentStatus;
+        this.deliveryStatus = deliveryStatus;
+        this.shippingAdress = shippingAdress;
+        this.items = items;
+        this.totalCost = totalCost;
+    }
 
     public Long getId() {
         return id;
@@ -26,12 +41,12 @@ public class OrderOutputDto {
         this.id = id;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public LocalDate getOrderDate() {
@@ -76,6 +91,10 @@ public class OrderOutputDto {
 
     public Map<Long, Integer> getItems() {
         return items;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
     }
 
     public void setItems(Map<Long, Integer> items) {

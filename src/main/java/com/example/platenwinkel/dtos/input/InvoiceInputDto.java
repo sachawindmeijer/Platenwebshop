@@ -5,39 +5,25 @@ import java.util.Collection;
 import java.util.List;
 
 public class InvoiceInputDto {
-    public String invoiceNumber;
-    public double VAT;
-    public double shippingCost;
-    public LocalDate date;
-    public Long customerId;
-    public List<Long> orderIds;
-    public Double totalAmount;
 
-    public List<Long> getOrderIds() {
-        return orderIds;
-    }
+    private String invoiceNumber; // Uniek factuurnummer (door gebruiker ingevoerd)
+    private double VAT; // BTW-percentage
 
-    public Long getCustomerId() {
-        return customerId;
-    }
+
 
     public String getInvoiceNumber() {
         return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
     }
 
     public double getVAT() {
         return VAT;
     }
 
-    public double getShippingCost() {
-        return shippingCost;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public Double getTotalAmount() {
-        return totalAmount;
+    public void setVAT(double VAT) {
+        this.VAT = VAT;
     }
 }
