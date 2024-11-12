@@ -62,29 +62,27 @@ public class OrderService {
                     .orElseThrow(() -> new RecordNotFoundException("Product not found with ID: " + productId));
             productMap.put(productId, product);
         }
-        // Map the input DTO to an Order entity
+
         Order order = OrderMapper.fromInputDToOrder(orderInputDto, user, productMap);
 
-        // Save the order
+
         Order savedOrder = orderRepository.save(order);
 
-        // Map the saved order to an output DTO
+
         return OrderMapper.fromOrderToOutputDto(savedOrder);
     }
 
-    // Update an existing order
+
     public OrderOutputDto updateOrder(Long id, OrderInputDto orderInputDto) {
-        // Find the existing order
+
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Order not found with ID: " + id));
 
-        // Map the updated details from the input DTO
         existingOrder.setOrderDate(orderInputDto.getOrderDate());
         existingOrder.setPaymentStatus(orderInputDto.getPaymentStatus());
         existingOrder.setDeliveryStatus(orderInputDto.getDeliveryStatus());
         existingOrder.setShippingAdress(orderInputDto.getShippingAdress());
 
-        // Map updated product items
         Map<Long, Integer> itemsDto = orderInputDto.getItems();
         Map<LpProduct, Integer> items = new HashMap<>();
         for (Map.Entry<Long, Integer> entry : itemsDto.entrySet()) {
@@ -94,13 +92,10 @@ public class OrderService {
         }
         existingOrder.setItems(items);
 
-        // Calculate new shipping cost
         existingOrder.calculateAndSetShippingCost();
 
-        // Save the updated order
         Order updatedOrder = orderRepository.save(existingOrder);
 
-        // Map the updated order to an output DTO
         return OrderMapper.fromOrderToOutputDto(updatedOrder);
     }
 

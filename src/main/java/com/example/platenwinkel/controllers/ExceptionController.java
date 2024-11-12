@@ -1,5 +1,6 @@
 package com.example.platenwinkel.controllers;
 
+import com.example.platenwinkel.exceptions.BadRequestException;
 import com.example.platenwinkel.exceptions.RecordNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,11 @@ public class ExceptionController {
                 .map(fieldError -> fieldError.getField()+ " " +fieldError.getDefaultMessage())
                 .collect(Collectors.toList()), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<String> handleBadRequestException(BadRequestException ex) {
 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 
 }
 

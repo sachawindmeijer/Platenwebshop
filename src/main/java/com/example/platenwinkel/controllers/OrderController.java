@@ -46,10 +46,10 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderOutputDto> createOrder( @RequestBody OrderInputDto orderInputDto, BindingResult bindingResult) {
-        String username = orderInputDto.getUsername();
         if (bindingResult.hasErrors()) {
             throw new InvalidInputException("Somthing went wrong, please check the following fields. " + BindingResultHelper.getErrorMessage(bindingResult));
         }
+        String username = orderInputDto.getUsername();
         OrderOutputDto order= orderService.createOrder(orderInputDto, username);
 
         URI uri = URI.create(

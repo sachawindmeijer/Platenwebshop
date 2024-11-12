@@ -4,6 +4,7 @@ package com.example.platenwinkel.controllers;
 import com.example.platenwinkel.dtos.input.AuthorityInputDto;
 import com.example.platenwinkel.dtos.input.UserInputDto;
 import com.example.platenwinkel.dtos.output.UserOutputDto;
+import com.example.platenwinkel.exceptions.UserNotFoundException;
 import com.example.platenwinkel.models.Authority;
 import com.example.platenwinkel.service.UserService;
 //import org.apache.coyote.BadRequestException;
@@ -16,7 +17,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.example.platenwinkel.exceptions.BadRequestException;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -40,20 +43,19 @@ public class UserController {
 
     @GetMapping(value = "/{username}")
     public ResponseEntity<UserOutputDto> getUser(@PathVariable("username") String username) {
-
         UserOutputDto optionalUser = userService.getUser(username);
-
-
+        if (optionalUser == null) {
+            throw new UserNotFoundException("User with username " + username + " not found");
+        }
         return ResponseEntity.ok().body(optionalUser);
-
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<UserOutputDto> createKlant(@RequestBody UserInputDto dto) {;
-
-        // Let op: het password van een nieuwe gebruiker wordt in deze code nog niet encrypted opgeslagen.
-        // Je kan dus (nog) niet inloggen met een nieuwe user.
-//        String newUsername = userService.createUser(dto, passwordEncoder);
+    public ResponseEntity<String> createKlant(@RequestBody UserInputDto dto) {;
+        if (dto.getUsername() == null || dto.getUsername().isEmpty() ||
+                dto.getPassword() == null || dto.getPassword().isEmpty()) {
+            throw new BadRequestException("Username and password are required and cannot be empty");
+        }
 
         String newUsername = userService.createUser(dto);
         if (dto.getAuthorities() != null && !dto.getAuthorities().isEmpty()) {
@@ -61,18 +63,19 @@ public class UserController {
                 userService.addAuthority(newUsername, authority.getAuthority());
             }
         }
-
-//        userService.addAuthority(newUsername, "ROLE_USER");
-
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUsername).toUri();
 
-        return ResponseEntity.created(location).build();
+        String successMessage = "Account created successfully " + newUsername;
+
+        return ResponseEntity.created(location).body(successMessage);
     }
 
     @PutMapping(value = "/{username}")
     public ResponseEntity<UserOutputDto> updateKlant(@PathVariable("username") String username, @RequestBody UserOutputDto dto) {
-
+        if (dto == null) {
+            throw new BadRequestException("User data for update cannot be null");
+        }
         userService.updateUser(username, dto);
 
         return ResponseEntity.noContent().build();
@@ -80,28 +83,36 @@ public class UserController {
 
     @DeleteMapping(value = "/{username}")
     public ResponseEntity<Object> deleteKlant(@PathVariable("username") String username) {
+        if (!userService.userExists(username)) {
+            throw new UserNotFoundException("User with username " + username + " does not exist");
+        }
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/{username}/authorities")
     public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
+        if (!userService.userExists(username)) {
+            throw new UserNotFoundException("User with username " + username + " not found");
+        }
         return ResponseEntity.ok().body(userService.getAuthorities(username));
     }
 
     @PostMapping(value = "/{username}/authorities")
     public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody AuthorityInputDto fields) {
         try {
-
             userService.addAuthority(username, fields.authorityName);
             return ResponseEntity.noContent().build();
         } catch (Exception ex) {
-            throw new BadRequestException();
+            throw new BadRequestException("Authority name is required");
         }
     }
 
     @DeleteMapping(value = "/{username}/authorities/{authority}")
     public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
+        if (!userService.userExists(username)) {
+            throw new UserNotFoundException("User with username " + username + " not found");
+        }
         userService.removeAuthority(username, authority);
         return ResponseEntity.noContent().build();
     }

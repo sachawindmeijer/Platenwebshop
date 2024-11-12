@@ -5,6 +5,7 @@ import com.example.platenwinkel.payload.AuthenticationRequest;
 
 import com.example.platenwinkel.service.MyUserDetailService;
 import com.example.platenwinkel.untils.JwtUtil;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,17 +35,13 @@ public class AuthenticationController {
     }
 
 
-    /*
-        Deze methode geeft de principal (basis user gegevens) terug van de ingelogde gebruiker
-    */
+
     @GetMapping(value = "/authenticated")
     public ResponseEntity<Object> authenticated(Authentication authentication, Principal principal) {
         return ResponseEntity.ok().body(principal);
     }
 
-    /*
-    Deze methode geeft het JWT token terug wanneer de gebruiker de juiste inloggegevens op geeft.
-     */
+
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
 
@@ -58,7 +55,9 @@ public class AuthenticationController {
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         final String jwt = jwtUtl.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
+                .body("Token successfully generated");
     }
 
 }
