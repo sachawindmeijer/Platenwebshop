@@ -5,6 +5,7 @@ import com.example.platenwinkel.payload.AuthenticationRequest;
 
 import com.example.platenwinkel.service.MyUserDetailService;
 import com.example.platenwinkel.untils.JwtUtil;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,7 +59,9 @@ public class AuthenticationController {
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         final String jwt = jwtUtl.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
+                .body("Token successfully generated");
     }
 
 }

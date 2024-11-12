@@ -2,10 +2,15 @@ package com.example.platenwinkel.controllers;
 
 import com.example.platenwinkel.dtos.input.ReportInputDto;
 import com.example.platenwinkel.dtos.output.ReportOutputDto;
+import com.example.platenwinkel.exceptions.InvalidInputException;
+import com.example.platenwinkel.helper.BindingResultHelper;
 import com.example.platenwinkel.service.ReportService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +19,7 @@ import java.util.List;
 @RequestMapping("/reports")
 public class ReportController {
 
-    private final  ReportService reportService;
+    private final ReportService reportService;
 
     @Autowired
     public ReportController(ReportService reportService) {
@@ -23,15 +28,22 @@ public class ReportController {
 
 
     @PostMapping
-    public ResponseEntity<ReportOutputDto> createReport(@RequestBody ReportInputDto reportInputDto) {
+    public ResponseEntity<ReportOutputDto> createReport(@Valid @RequestBody ReportInputDto reportInputDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidInputException("Somthing went wrong, please check the following fields. " + BindingResultHelper.getErrorMessage(bindingResult));
+        }
+
         ReportOutputDto createdReport = reportService.createReport(reportInputDto);
+
+
         return new ResponseEntity<>(createdReport, HttpStatus.CREATED);
     }
-@GetMapping
-public ResponseEntity<List<ReportOutputDto>>getAllReports(){
+
+    @GetMapping
+    public ResponseEntity<List<ReportOutputDto>> getAllReports() {
 
         return ResponseEntity.ok(reportService.getAllReports());
-}
+    }
 
 
     @GetMapping("/{id}")

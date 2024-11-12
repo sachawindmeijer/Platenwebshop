@@ -62,14 +62,8 @@ public class LpProductController {
 
     @GetMapping
     public ResponseEntity<List<LpProductOutputDto>> getAllLps(@RequestParam(value = "artist", required = false) Optional<String> artist) {
-        List<LpProductOutputDto> dtos;
-
-        if (artist.isEmpty()) {
-            dtos = lpProductService.getAllLps();
-        } else {
-            dtos = lpProductService.getAllLpProductsByArtist(artist.get());
-        }
-        return ResponseEntity.ok().body(dtos);
+        List<LpProductOutputDto> dtos = artist.isEmpty() ? lpProductService.getAllLps() : lpProductService.getAllLpProductsByArtist(artist.get());
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
@@ -83,8 +77,6 @@ public class LpProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteLpProduct(@PathVariable Long id) {
         System.out.println("Received request to delete LP product with ID: " + id);
-
-
         try {
             lpProductService.deletelpproduct(id);
             System.out.println("LP product deleted successfully");

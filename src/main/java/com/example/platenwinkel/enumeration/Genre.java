@@ -1,5 +1,5 @@
 package com.example.platenwinkel.enumeration;
 
 public enum Genre {
-    ROCK, POP, JAZZ, CLASSICAL, HIPHOP, SOUL
+    ROCK, POP, JAZZ, CLASSICAL, HIPHOP
 }
