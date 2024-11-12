@@ -6,11 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-@Entity// dan zeggen we dat deze naar de database moet
+@Entity
 @Table(name = "users")
-public class User {// inlogt in je systeem. Dit kan een admin, een verkoper, of een klant zijn
+public class User {
 
-    // Deze eerste 3 variabelen zijn verplicht om te kunnen inloggen met een username, password en rol.
+
     @Id
     @Column(nullable = false, unique = true)
     private String username;
@@ -27,8 +27,7 @@ public class User {// inlogt in je systeem. Dit kan een admin, een verkoper, of 
             fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
 
-    // Deze 3 variabelen zijn niet verplicht.
-    // Je mag ook een "String banaan;" toevoegen, als je dat graag wilt.
+
     @Column(nullable = false)
     private boolean enabled = true;
 

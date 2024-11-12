@@ -63,10 +63,6 @@ public class InvoiceService {
     }
 
 
-//    public Invoice saveInvoice(Invoice invoice) {
-//        return invoiceRepository.save(invoice);
-//    }
-
     public InvoiceOutputDto updateInvoice(Long id, InvoiceInputDto inputDto) {
         Invoice existingInvoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Invoice not found"));

@@ -97,7 +97,7 @@ class OrderServiceTest {
         assertEquals(1, firstOrder.getPaymentStatus());
         assertEquals(DeliveryStatus.PENDING, firstOrder.getDeliveryStatus());
 
-        // Verify second order
+
         OrderOutputDto secondOrder = result.get(1);
         assertEquals(2L, secondOrder.getId());
         assertEquals("Truus", secondOrder.getUsername());

@@ -22,10 +22,6 @@ public class LpProductService {
         this.lpProductRepository = lpProductRepository;
     }
 
-    //--------------------------------------------------------------------------
-    // Vanuit de repository kunnen we een lijst van Televisions krijgen, maar de communicatie container tussen Service en
-    // Controller is de Dto. We moeten de Televisions dus vertalen naar TelevisionDtos. Dit moet een voor een, omdat
-    // de translateToDto() methode geen lijst accepteert als argument, dus gebruiken we een for-loop.
     public List<LpProductOutputDto> getAllLps() {
         List<LpProduct> lpProductlist = lpProductRepository.findAll();
         List<LpProductOutputDto> lpDtoList = new ArrayList<>();
@@ -58,23 +54,19 @@ public class LpProductService {
         }
     }
 
-    // In deze methode moeten we twee keer een vertaal methode toepassen.
-    // De eerste keer van dto naar televsion, omdat de parameter een dto is.
-    // De tweede keer van television naar dto, omdat de return waarde een dto is.
     public LpProductOutputDto addLpProduct(LpProductInputDto lpProductInputDto) {
         LpProduct lpProduct = LpProductMapper.fromInputDtoToModel(lpProductInputDto);
         LpProduct savedProduct = lpProductRepository.save(lpProduct);
         return LpProductMapper.fromModelToOutputDto(savedProduct);
     }
     public LpProductOutputDto updateLpProduct(Long id, LpProductInputDto lpProductInputDto) {
-        // Retrieve the existing LP product
+
         Optional<LpProduct> lpProductOptional = lpProductRepository.findById(id);
 
-        // Check if the LP product exists
+
         if (lpProductOptional.isPresent()) {
             LpProduct existingLpProduct = lpProductOptional.get();
 
-            // Update the fields of the existing LP product with new data from input DTO
             existingLpProduct.setArtist(lpProductInputDto.getArtist());
             existingLpProduct.setAlbum(lpProductInputDto.getAlbum());
             existingLpProduct.setDescription(lpProductInputDto.getDescription());
@@ -83,22 +75,18 @@ public class LpProductService {
             existingLpProduct.setPriceInclVat(lpProductInputDto.getPriceInclVat());
             existingLpProduct.setPriceEclVat(lpProductInputDto.getPriceEclVat());
 
-            // Save the updated LP product back to the repository
             LpProduct updatedProduct = lpProductRepository.save(existingLpProduct);
 
-            // Map the updated LP product to the output DTO and return
+
             return LpProductMapper.fromModelToOutputDto(updatedProduct);
         } else {
-            // Throw an exception if the LP product was not found
+
             throw new RecordNotFoundException("Geen LP product gevonden met ID: " + id);
         }
     }
 
-    // Dit is de vertaal methode van Television naar TelevisionDto
-    // Deze methode is inhoudelijk neit veranderd. Het is alleen verplaatst naar de Service laag.
     public void deletelpproduct(@RequestBody Long id) {
 
         lpProductRepository.deleteById(id);
     }
-
 }

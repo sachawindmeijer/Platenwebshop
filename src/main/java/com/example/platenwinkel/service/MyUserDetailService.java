@@ -21,9 +21,6 @@ public class MyUserDetailService implements UserDetailsService {
     }
 
 
-//    @Autowired
-//    private AuthorityService authorityService;
-
         @Override
         public UserDetails loadUserByUsername(String username) {
             UserOutputDto userDto = userService.getUser(username);

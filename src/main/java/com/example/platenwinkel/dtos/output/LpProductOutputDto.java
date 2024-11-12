@@ -8,13 +8,13 @@ public class LpProductOutputDto {
     public String album;
     public String description;
     public Genre genre;
-    public int inStock; // dit aanpassen in het klassen diagram
+    public int inStock;
 
     public double priceInclVat;
 
-    public double priceEclVat;//ook deze aanpassen
+    public double priceEclVat;
 
-//    private Integer sellprice; // we willen niet dat de klant de sell price kan zien
+
 
 
 

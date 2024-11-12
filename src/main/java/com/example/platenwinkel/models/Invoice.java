@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
-
-//vertegenwoordigt een volledige factuur
 @Entity
 @Table(name = "Invoice")
 public class Invoice {
@@ -17,7 +15,7 @@ public class Invoice {
 
     @OneToOne
     @JoinColumn(name = "order_id", nullable = false)
-    private Order order; // Verwijzing naar de bestelling waarvoor deze factuur is
+    private Order order;
     @Column(nullable = false, unique = true)
     private String invoiceNumber;
     @Column(nullable = false)
@@ -27,9 +25,9 @@ public class Invoice {
     private LocalDate date;
 
     private LocalDate invoiceDate;
-    private double amountExclVat; // Bedrag exclusief BTW
-    private double vatAmount; // BTW bedrag
-    private double amountInclVat; // Bedrag inclusief BTW
+    private double amountExclVat;
+    private double vatAmount;
+    private double amountInclVat;
 
 
     // Default constructor

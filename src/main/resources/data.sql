@@ -43,9 +43,9 @@ VALUES
 INSERT INTO report_top_selling_products (report_id, lpproduct_id)
 VALUES
     (1, 3),
-    (2, 4);  -- Corrected missing semicolon
+    (2, 4);
 
--- Insert low-selling products
+
 INSERT INTO report_low_selling_products (report_id, lp_product_id)
 VALUES
     (1, 6),

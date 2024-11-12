@@ -79,7 +79,7 @@ class LpProductControllerTest {
 
     @Test
     void getAllLpProducts() throws Exception {
-        // Act: Retrieve all LP products
+        // Act:
         this.mockMvc.perform(get("/lpproducts"))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
