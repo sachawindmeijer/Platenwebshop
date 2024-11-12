@@ -62,7 +62,7 @@ public class OrderService {
                     .orElseThrow(() -> new RecordNotFoundException("Product not found with ID: " + productId));
             productMap.put(productId, product);
         }
-        // Map the input DTO to an Order entity
+
         Order order = OrderMapper.fromInputDToOrder(orderInputDto, user, productMap);
 
         // Save the order
