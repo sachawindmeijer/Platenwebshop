@@ -35,7 +35,7 @@ public class LpProductController {
 
     @PostMapping
     public ResponseEntity<LpProductOutputDto> addLpProduct(@Valid @RequestBody LpProductInputDto lpProductInputDto, BindingResult bindingResult) {
-        //convert this part to a helper class
+
         if (bindingResult.hasErrors()) {
             throw new InvalidInputException("Somthing went wrong, please check the following fields. " + BindingResultHelper.getErrorMessage(bindingResult));
         }

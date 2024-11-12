@@ -28,7 +28,7 @@ public class ExceptionController {
     }
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<String> handleBadRequestException(BadRequestException ex) {
-        // Return the error message and a BAD_REQUEST (400) status
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 

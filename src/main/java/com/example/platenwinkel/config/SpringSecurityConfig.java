@@ -49,25 +49,20 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
 
-                                // Public endpoints
                                 .requestMatchers("/authenticate").permitAll()
                                 .requestMatchers("/public/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/lpproducts").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/lpproducts/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
-//                                .requestMatchers(HttpMethod.POST,"/customers").hasRole("USER")
+//
                                 .requestMatchers(HttpMethod.POST, "/orders").hasRole("USER")
 
                                 .requestMatchers(HttpMethod.GET, "/authenticated").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/orders/**").hasAnyRole("ADMIN","USER")
                                 .requestMatchers(HttpMethod.GET, "/invoices").hasAnyRole("ADMIN", "USER")
                                 .requestMatchers(HttpMethod.GET, "/invoices/**").hasAnyRole("ADMIN", "USER")
-//                                .requestMatchers(HttpMethod.GET,"/customers/{id}").hasAnyRole("ADMIN","USER")
-
-//                                .requestMatchers(HttpMethod.GET,"/customers/").hasRole("ADMIN")
-//                                .requestMatchers(HttpMethod.PUT,"/customers/{id}").hasRole("ADMIN")
-//                                .requestMatchers(HttpMethod.DELETE,"/customers/{id}").hasRole("ADMIN")
+//
                                 .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
@@ -85,7 +80,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/reports/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/reports/**").hasRole("ADMIN")
 
-                                // Default to deny all other requests
+
                                 .anyRequest().denyAll()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

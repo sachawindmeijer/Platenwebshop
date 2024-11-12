@@ -7,15 +7,14 @@ import jakarta.validation.constraints.Positive;
 
 
 public class LpProductInputDto {
-// dit vul je in in Postman
-//public Long id;
+
+
     @NotBlank
     public String artist;
     public String album;
     public String description;
     public Genre genre;
-    public int inStock; // dit aanpassen in het klassen diagram
-
+    public int inStock;
 
     public double  PriceInclVat;
 

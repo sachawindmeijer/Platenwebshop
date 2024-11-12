@@ -6,8 +6,8 @@ import java.util.List;
 
 public class InvoiceInputDto {
 
-    private String invoiceNumber; // Uniek factuurnummer (door gebruiker ingevoerd)
-    private double VAT; // BTW-percentage
+    private String invoiceNumber;
+    private double VAT;
 
 
 
