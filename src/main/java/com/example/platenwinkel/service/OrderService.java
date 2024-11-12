@@ -65,7 +65,7 @@ public class OrderService {
 
         Order order = OrderMapper.fromInputDToOrder(orderInputDto, user, productMap);
 
-        // Save the order
+
         Order savedOrder = orderRepository.save(order);
 
         // Map the saved order to an output DTO
