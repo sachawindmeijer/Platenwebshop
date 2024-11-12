@@ -16,7 +16,7 @@ public class OrderOutputDto {
     private int paymentStatus;
     private DeliveryStatus deliveryStatus;
     private String shippingAdress;
-    private Map<Long, Integer> items; // Mapping product ID's to quantities
+    private Map<Long, Integer> items;
     private double totalCost;
 
     public OrderOutputDto() {}

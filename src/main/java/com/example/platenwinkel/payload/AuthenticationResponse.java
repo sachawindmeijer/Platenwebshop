@@ -2,9 +2,6 @@ package com.example.platenwinkel.payload;
 
 public class AuthenticationResponse {
 
-    //    De AuthenticationResponse klasse wordt gebruikt om een reactie
-//    terug te sturen naar de client nadat een gebruiker
-//    succesvol is geauthenticeerd.
 
     private final String jwt;
 

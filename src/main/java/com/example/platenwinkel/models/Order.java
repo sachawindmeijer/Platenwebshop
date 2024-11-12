@@ -24,7 +24,7 @@ public class Order {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
-    private List<LpProduct> products;  // Lijst van bestelde producten
+    private List<LpProduct> products;
     @Column(nullable = false)
     private LocalDate orderDate;
     private Double shippingCost;
@@ -35,13 +35,13 @@ public class Order {
     @Column(nullable = false)
     private String shippingAdress;
 
-    @ElementCollection // Geeft aan dat de items-collectie geen aparte entiteit is, maar onderdeel van de Order-entiteit.
+    @ElementCollection
     @CollectionTable(
-            name = "order_items", // De naam van de tabel waarin de collectie wordt opgeslagen.
-            joinColumns = @JoinColumn(name = "order_id") // De kolom die de relatie met de Order-entiteit aangeeft.
+            name = "order_items",
+            joinColumns = @JoinColumn(name = "order_id")
     )
-    @MapKeyJoinColumn(name = "lpproduct_id") // Geeft aan dat de sleutel in de Map een verwijzing is naar een LpProduct.
-    @Column(name = "quantity") // Geeft aan dat de waarde van de Map (Integer) als "quantity" wordt opgeslagen.
+    @MapKeyJoinColumn(name = "lpproduct_id")
+    @Column(name = "quantity")
     private Map<LpProduct, Integer> items = new HashMap<>();
 
     private static final double FREE_SHIPPING_THRESHOLD = 50.00;
@@ -74,7 +74,6 @@ public class Order {
         return getTotalOrderAmount() + (shippingCost != null ? shippingCost : 0.00);
     }
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

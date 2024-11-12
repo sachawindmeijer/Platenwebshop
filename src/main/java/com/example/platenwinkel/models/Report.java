@@ -8,14 +8,14 @@ import java.util.List;
 
 @Entity
 public class Report {
-// - ( product voorraadniveaus, verkopen)
+
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     public String comment;
     private LocalDate rapportDatum;
 
-    @ManyToMany // Geeft de relatie aan tussen Report en LpProduct voor populaire producten
+    @ManyToMany
     @JoinTable(
             name = "report_top_selling_products",
             joinColumns = @JoinColumn(name = "report_id"),
@@ -23,7 +23,7 @@ public class Report {
     )
     private List<LpProduct> topSellingProducts;
 
-    @ManyToMany // Geeft de relatie aan tussen Report en LpProduct voor minder verkochte producten
+    @ManyToMany
     @JoinTable(
             name = "report_low_selling_products",
             joinColumns = @JoinColumn(name = "report_id"),

@@ -6,23 +6,10 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
-
-//Beheer van productgegevens (toevoegen, bewerken van beschrijvingen, releasedata).
-//Aanpassing van voorraadniveaus.
-
-//Beheer van promoties en aanbiedingen. private List<Sale> sales;
-//boolean
-// if yes then 25% off
-
-//Upload en beheer van productafbeeldingen (hoesafbeeldingen, vinyl, extra's).
-//
-//
-@Entity//geeft aan dat de class die volgt een entiteit is in de database
+@Entity
 @Table(name = "Lp_Product")
 public class LpProduct {
-    //  @Id  //  Een entiteit moet een primary key bevatten(id)
 
-    //  @GeneratedValue  // GeneratedValue betekend dat je deze waarde niet zelf hoeft in te vullen, dit doet Spring Boot voor jou bij het opslaan in de database.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -33,14 +20,13 @@ public class LpProduct {
     private LocalDate releaseDate;
     @Enumerated(EnumType.STRING)
     private Genre genre;
-    private int inStock; // dit aanpassen in het klassen diagram
+    private int inStock;
 
 
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-//     private Promotion promotion;
+
 
     private double priceInclVat;
-    private double priceEclVat;//ook deze aanpassen
+    private double priceEclVat;
 
     public LpProduct(Long id, String artist, String album, String description, Genre genre, int inStock, double priceEclVat) {
         this.id = id;
@@ -55,8 +41,6 @@ public class LpProduct {
 
     }
 
-//    List <Image> images;
-    //
 
     public void setId(Long id) {
         this.id = id;
@@ -130,4 +114,3 @@ public class LpProduct {
         return genre;
     }
 }
-//
