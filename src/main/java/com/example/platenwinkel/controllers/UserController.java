@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @CrossOrigin
 @RestController
@@ -42,12 +43,9 @@ public class UserController {
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<UserOutputDto> getUser(@PathVariable("username") String username) {
-        UserOutputDto optionalUser = userService.getUser(username);
-        if (optionalUser == null) {
-            throw new UserNotFoundException("User with username " + username + " not found");
-        }
-        return ResponseEntity.ok().body(optionalUser);
+    public ResponseEntity<UserOutputDto> getUser(@PathVariable String username) {
+        UserOutputDto user = userService.getUser(username);
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping(value = "")
@@ -58,6 +56,7 @@ public class UserController {
         }
 
         String newUsername = userService.createUser(dto);
+
         if (dto.getAuthorities() != null && !dto.getAuthorities().isEmpty()) {
             for (Authority authority : dto.getAuthorities()) {
                 userService.addAuthority(newUsername, authority.getAuthority());
@@ -73,46 +72,33 @@ public class UserController {
 
     @PutMapping(value = "/{username}")
     public ResponseEntity<UserOutputDto> updateKlant(@PathVariable("username") String username, @RequestBody UserOutputDto dto) {
-        if (dto == null) {
-            throw new BadRequestException("User data for update cannot be null");
-        }
         userService.updateUser(username, dto);
-
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "/{username}")
     public ResponseEntity<Object> deleteKlant(@PathVariable("username") String username) {
-        if (!userService.userExists(username)) {
-            throw new UserNotFoundException("User with username " + username + " does not exist");
-        }
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/{username}/authorities")
     public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
-        if (!userService.userExists(username)) {
-            throw new UserNotFoundException("User with username " + username + " not found");
-        }
-        return ResponseEntity.ok().body(userService.getAuthorities(username));
+        Set<Authority> authorities = userService.getAuthorities(username);
+        return ResponseEntity.ok(authorities);
     }
 
     @PostMapping(value = "/{username}/authorities")
     public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody AuthorityInputDto fields) {
-        try {
-            userService.addAuthority(username, fields.authorityName);
-            return ResponseEntity.noContent().build();
-        } catch (Exception ex) {
+        if (fields.authorityName == null || fields.authorityName.isEmpty()) {
             throw new BadRequestException("Authority name is required");
         }
+        userService.addAuthority(username, fields.authorityName);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "/{username}/authorities/{authority}")
     public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
-        if (!userService.userExists(username)) {
-            throw new UserNotFoundException("User with username " + username + " not found");
-        }
         userService.removeAuthority(username, authority);
         return ResponseEntity.noContent().build();
     }

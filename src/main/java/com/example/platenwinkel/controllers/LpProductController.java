@@ -3,16 +3,13 @@ package com.example.platenwinkel.controllers;
 import com.example.platenwinkel.dtos.input.LpProductInputDto;
 import com.example.platenwinkel.dtos.output.LpProductOutputDto;
 import com.example.platenwinkel.exceptions.InvalidInputException;
-import com.example.platenwinkel.exceptions.RecordNotFoundException;
+
 import com.example.platenwinkel.helper.BindingResultHelper;
 import com.example.platenwinkel.helper.PriceCalculator;
 import com.example.platenwinkel.service.LpProductService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -37,6 +34,7 @@ public class LpProductController {
     public ResponseEntity<LpProductOutputDto> addLpProduct(@Valid @RequestBody LpProductInputDto lpProductInputDto, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
+
             throw new InvalidInputException("Somthing went wrong, please check the following fields. " + BindingResultHelper.getErrorMessage(bindingResult));
         }
         LpProductOutputDto lpProduct = lpProductService.addLpProduct(lpProductInputDto);
@@ -59,7 +57,6 @@ public class LpProductController {
         return ResponseEntity.ok(updatedLpProduct);
     }
 
-
     @GetMapping
     public ResponseEntity<List<LpProductOutputDto>> getAllLps(@RequestParam(value = "artist", required = false) Optional<String> artist) {
         List<LpProductOutputDto> dtos = artist.isEmpty() ? lpProductService.getAllLps() : lpProductService.getAllLpProductsByArtist(artist.get());
@@ -76,14 +73,7 @@ public class LpProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteLpProduct(@PathVariable Long id) {
-        System.out.println("Received request to delete LP product with ID: " + id);
-        try {
-            lpProductService.deletelpproduct(id);
-            System.out.println("LP product deleted successfully");
-        } catch (Exception e) {
-            System.out.println("Error occurred: " + e.getMessage());
-            throw e;
-        }
+        lpProductService.deletelpproduct(id);
         return ResponseEntity.noContent().build();
     }
 

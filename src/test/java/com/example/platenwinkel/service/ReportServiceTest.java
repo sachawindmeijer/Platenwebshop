@@ -79,7 +79,7 @@ class ReportServiceTest {
         assertNotNull(result, "ReportOutputDto should not be null");
 
 
-        double expectedTotalRevenue = (15 * 16.80) + (5 * 18.50);
+        Double expectedTotalRevenue = (15 * 16.80) + (5 * 18.50);
         assertEquals(expectedTotalRevenue, result.getTotalRevenue(), 0.01, "Total revenue should be correctly calculated");
 
 
@@ -108,7 +108,7 @@ class ReportServiceTest {
 
         List<LpProduct> topSellingProducts = List.of(lpProduct);
         List<LpProduct> lowSellingProducts = List.of();
-        double totalRevenue = 150.0;
+        Double totalRevenue = 150.0;
         LocalDate generatedDate = LocalDate.now();
 
         Report report = new Report(topSellingProducts, lowSellingProducts, totalRevenue);

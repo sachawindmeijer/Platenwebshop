@@ -1,7 +1,7 @@
 package com.example.platenwinkel.helper;
 
 public class calculateShippingCost {
-    public static double shippingCost(double price) {
+    public static Double shippingCost(Double price) {
         return price + 6.85;
     }
 }

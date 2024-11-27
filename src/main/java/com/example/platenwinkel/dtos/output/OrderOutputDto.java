@@ -17,7 +17,7 @@ public class OrderOutputDto {
     private DeliveryStatus deliveryStatus;
     private String shippingAdress;
     private Map<Long, Integer> items;
-    private double totalCost;
+    private Double totalCost;
 
     public OrderOutputDto() {}
 
@@ -93,7 +93,7 @@ public class OrderOutputDto {
         return items;
     }
 
-    public void setTotalCost(double totalCost) {
+    public void setTotalCost(Double totalCost) {
         this.totalCost = totalCost;
     }
 

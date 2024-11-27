@@ -34,7 +34,8 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<List<OrderOutputDto>>getAllOrders() {
-       return ResponseEntity.ok(orderService.getAllOrders());
+        List<OrderOutputDto> orders = orderService.getAllOrders();
+        return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/{id}")
@@ -63,13 +64,8 @@ public class OrderController {
 
     @PutMapping("/{id}")
     public ResponseEntity<OrderOutputDto> updateOrder(@PathVariable Long id, @RequestBody OrderInputDto orderInputDto) {
-        try {
-            OrderOutputDto updatedOrderOutputDto = orderService.updateOrder(id, orderInputDto);
-            return ResponseEntity.ok(updatedOrderOutputDto);
-        } catch (RecordNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
+        OrderOutputDto updatedOrderOutputDto = orderService.updateOrder(id, orderInputDto);
+        return ResponseEntity.ok(updatedOrderOutputDto);
     }
 
     @DeleteMapping("/{id}")

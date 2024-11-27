@@ -19,21 +19,21 @@ public class Invoice {
     @Column(nullable = false, unique = true)
     private String invoiceNumber;
     @Column(nullable = false)
-    private double VAT;
+    private Double VAT;
 
     @Column(nullable = false)
     private LocalDate date;
 
     private LocalDate invoiceDate;
-    private double amountExclVat;
-    private double vatAmount;
-    private double amountInclVat;
+    private Double amountExclVat;
+    private Double vatAmount;
+    private Double amountInclVat;
 
 
     // Default constructor
     public Invoice(){}
 
-    public Invoice(Order order, String invoiceNumber, double VAT) {
+    public Invoice(Order order, String invoiceNumber, Double VAT) {
         this.order = order;
         this.invoiceNumber = invoiceNumber;
         this.VAT = VAT;
@@ -65,11 +65,11 @@ public class Invoice {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public double getVAT() {
+    public Double getVAT() {
         return VAT;
     }
 
-    public void setVAT(double VAT) {
+    public void setVAT(Double VAT) {
         this.VAT = VAT;
     }
 
@@ -89,27 +89,27 @@ public class Invoice {
         this.invoiceDate = invoiceDate;
     }
 
-    public double getAmountExclVat() {
+    public Double getAmountExclVat() {
         return amountExclVat;
     }
 
-    public void setAmountExclVat(double amountExclVat) {
+    public void setAmountExclVat(Double amountExclVat) {
         this.amountExclVat = amountExclVat;
     }
 
-    public double getVatAmount() {
+    public Double getVatAmount() {
         return vatAmount;
     }
 
-    public void setVatAmount(double vatAmount) {
+    public void setVatAmount(Double vatAmount) {
         this.vatAmount = vatAmount;
     }
 
-    public double getAmountInclVat() {
+    public Double getAmountInclVat() {
         return amountInclVat;
     }
 
-    public void setAmountInclVat(double amountInclVat) {
+    public void setAmountInclVat(Double amountInclVat) {
         this.amountInclVat = amountInclVat;
     }
 

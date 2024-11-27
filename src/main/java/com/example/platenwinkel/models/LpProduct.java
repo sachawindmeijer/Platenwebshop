@@ -25,8 +25,8 @@ public class LpProduct {
 
 
 
-    private double priceInclVat;
-    private double priceEclVat;
+    private Double priceInclVat;
+    private Double priceEclVat;
 
     public LpProduct(Long id, String artist, String album, String description, Genre genre, int inStock, double priceEclVat) {
         this.id = id;
@@ -79,19 +79,19 @@ public class LpProduct {
         this.inStock = inStock;
     }
 
-    public double getPriceInclVat() {
+    public Double getPriceInclVat() {
         return priceInclVat;
     }
 
-    public void setPriceInclVat(double priceInclVat) {
+    public void setPriceInclVat(Double priceInclVat) {
         this.priceInclVat = PriceCalculator.calculatePriceInclVat(priceEclVat);
     }
 
-    public double getPriceEclVat() {
+    public Double getPriceEclVat() {
         return priceEclVat;
     }
 
-    public void setPriceEclVat(double priceEclVat) {
+    public void setPriceEclVat(Double priceEclVat) {
         this.priceEclVat = priceEclVat;
     }
 

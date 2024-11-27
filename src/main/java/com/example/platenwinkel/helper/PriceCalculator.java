@@ -1,7 +1,7 @@
 package com.example.platenwinkel.helper;
 
 public class PriceCalculator {
-    public static double calculatePriceInclVat(double priceExclVat) {
+    public static Double calculatePriceInclVat(Double priceExclVat) {
         return priceExclVat * 1.21;
     }
 }

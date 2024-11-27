@@ -37,7 +37,7 @@ public class Report {
         this.rapportDatum = LocalDate.now();
     }
 
-    public Report(List<LpProduct> topSellingProducts, List<LpProduct> lowSellingProducts, double totalRevenue) {
+    public Report(List<LpProduct> topSellingProducts, List<LpProduct> lowSellingProducts, Double totalRevenue) {
         this.rapportDatum = LocalDate.now();
         this.topSellingProducts = topSellingProducts;
         this.lowSellingProducts = lowSellingProducts;
@@ -68,11 +68,11 @@ public class Report {
         this.lowSellingProducts = lowSellingProducts;
     }
 
-    public double getTotalRevenue() {
+    public Double getTotalRevenue() {
         return totalRevenue;
     }
 
-    public void setTotalRevenue(double totalRevenue) {
+    public void setTotalRevenue(Double totalRevenue) {
         this.totalRevenue = totalRevenue;
     }
 

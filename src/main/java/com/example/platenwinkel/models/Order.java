@@ -44,8 +44,8 @@ public class Order {
     @Column(name = "quantity")
     private Map<LpProduct, Integer> items = new HashMap<>();
 
-    private static final double FREE_SHIPPING_THRESHOLD = 50.00;
-    private static final double STANDARD_SHIPPING_COST = 6.85;
+    private static final Double FREE_SHIPPING_THRESHOLD = 50.00;
+    private static final Double STANDARD_SHIPPING_COST = 6.85;
 
     public Order() {
     }
@@ -59,18 +59,18 @@ public class Order {
         this.items = items;
     }
 
-    public double getTotalOrderAmount() {
+    public Double getTotalOrderAmount() {
         return items.entrySet().stream()
                 .mapToDouble(entry -> entry.getKey().getPriceInclVat() * entry.getValue())
                 .sum();
     }
 
     public void calculateAndSetShippingCost() {
-        double totalAmount = getTotalOrderAmount();
+        Double totalAmount = getTotalOrderAmount();
         this.shippingCost = totalAmount > FREE_SHIPPING_THRESHOLD ? 0.00 : STANDARD_SHIPPING_COST;
     }
 
-    public double getTotalCost() {
+    public Double getTotalCost() {
         return getTotalOrderAmount() + (shippingCost != null ? shippingCost : 0.00);
     }
 
