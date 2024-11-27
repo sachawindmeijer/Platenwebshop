@@ -43,14 +43,12 @@ public class OrderService {
     }
 
     public OrderOutputDto getOrderById(Long id) {
-        Optional<Order> orderOptional = orderRepository.findById(id);
-        if (orderOptional.isPresent()) {
-            Order order = orderOptional.get();
-            return OrderMapper.fromOrderToOutputDto(order);
-        } else {
-            throw new RecordNotFoundException("geen lpproduct gevonden");
-        }
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Order not found with ID: " + id));
+
+        return OrderMapper.fromOrderToOutputDto(order);
     }
+
 
     public OrderOutputDto createOrder(OrderInputDto orderInputDto, String username) {
         User user = userRepository.findById(username)
@@ -65,9 +63,7 @@ public class OrderService {
 
         Order order = OrderMapper.fromInputDToOrder(orderInputDto, user, productMap);
 
-
         Order savedOrder = orderRepository.save(order);
-
 
         return OrderMapper.fromOrderToOutputDto(savedOrder);
     }

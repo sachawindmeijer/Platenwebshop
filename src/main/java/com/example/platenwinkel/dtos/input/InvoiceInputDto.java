@@ -7,7 +7,7 @@ import java.util.List;
 public class InvoiceInputDto {
 
     private String invoiceNumber;
-    private double VAT;
+    private Double VAT;
 
 
 
@@ -19,11 +19,11 @@ public class InvoiceInputDto {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public double getVAT() {
+    public Double getVAT() {
         return VAT;
     }
 
-    public void setVAT(double VAT) {
+    public void setVAT(Double VAT) {
         this.VAT = VAT;
     }
 }

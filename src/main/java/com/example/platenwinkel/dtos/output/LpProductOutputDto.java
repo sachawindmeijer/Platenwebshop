@@ -10,9 +10,9 @@ public class LpProductOutputDto {
     public Genre genre;
     public int inStock;
 
-    public double priceInclVat;
+    public Double priceInclVat;
 
-    public double priceEclVat;
+    public Double priceEclVat;
 
 
 
@@ -68,19 +68,19 @@ public class LpProductOutputDto {
         this.id = id;
     }
 
-    public double getPriceInclVat() {
+    public Double getPriceInclVat() {
         return priceInclVat;
     }
 
-    public void setPriceInclVat(double priceInclVat) {
+    public void setPriceInclVat(Double priceInclVat) {
         this.priceInclVat = priceInclVat;
     }
 
-    public double getPriceEclVat() {
+    public Double getPriceEclVat() {
         return priceEclVat;
     }
 
-    public void setPriceEclVat(double priceEclVat) {
+    public void setPriceEclVat(Double priceEclVat) {
         this.priceEclVat = priceEclVat;
     }
 }

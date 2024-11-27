@@ -41,37 +41,21 @@ public class InvoiceController {
     public ResponseEntity<InvoiceOutputDto> createInvoice(@RequestBody InvoiceInputDto invoiceInputDto,
                                                           @RequestParam String username,
                                                           @RequestParam Long orderId) {
-        try {
-            InvoiceOutputDto createdInvoice = invoiceService.createInvoice(invoiceInputDto, username, orderId);
-            return new ResponseEntity<>(createdInvoice, HttpStatus.CREATED);
-        } catch (InvalidInputException ex) {
-            throw new InvalidInputException("Error creating invoice: " + ex.getMessage());
-        }
+        InvoiceOutputDto createdInvoice = invoiceService.createInvoice(invoiceInputDto, username, orderId);
+        return new ResponseEntity<>(createdInvoice, HttpStatus.CREATED);
     }
-
-
 
     @PutMapping("/{id}")
     public ResponseEntity<InvoiceOutputDto> updateInvoice(@PathVariable Long id,
                                                           @RequestBody InvoiceInputDto inputDto) {
-        try {
-            InvoiceOutputDto updatedInvoice = invoiceService.updateInvoice(id, inputDto);
-            return ResponseEntity.ok(updatedInvoice);
-        } catch (RecordNotFoundException ex) {
-            throw new RecordNotFoundException("Invoice with ID " + id + " not found.");
-        } catch (InvalidInputException ex) {
-            throw new InvalidInputException("Error updating invoice: " + ex.getMessage());
-        }
+        InvoiceOutputDto updatedInvoice = invoiceService.updateInvoice(id, inputDto);
+        return ResponseEntity.ok(updatedInvoice);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteInvoice(@PathVariable Long id) {
-        try {
-            invoiceService.deleteInvoice(id);
-            return ResponseEntity.noContent().build();
-        } catch (RecordNotFoundException ex) {
-            throw new RecordNotFoundException("Invoice with ID " + id + " not found.");
-        }
+        invoiceService.deleteInvoice(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

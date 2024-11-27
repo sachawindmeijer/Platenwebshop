@@ -23,11 +23,12 @@ import java.util.Set;
 public class UserService {
     private final UserRepository userRepository;
 
-    @Autowired
+//    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,  PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -41,19 +42,11 @@ public class UserService {
     }
 
     public UserOutputDto getUser(String username) {
-        UserOutputDto dto = new UserOutputDto();
-        Optional<User> user = userRepository.findById(username);
-        if (user.isPresent()){
-            dto = fromUser(user.get());
-        }else {
-            throw new UsernameNotFoundException(username);
-        }
-        return dto;
+        return userRepository.findById(username)
+                .map(UserService::fromUser)
+                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
     }
 
-    public boolean userExists(String username) {
-        return userRepository.existsById(username);
-    }
 
     public String createUser(UserInputDto userDto) {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
@@ -67,6 +60,9 @@ public class UserService {
     }
 
     public void deleteUser(String username) {
+        if (!userRepository.existsById(username)) {
+            throw new RecordNotFoundException("User with username " + username + " not found");
+        }
         userRepository.deleteById(username);
     }
 
@@ -86,8 +82,9 @@ public class UserService {
 
     public void addAuthority(String username, String authority) {
 
-        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-        User user = userRepository.findById(username).get();
+        User user = userRepository.findById(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+
         user.addAuthority(new Authority(username, authority));
         userRepository.save(user);
     }

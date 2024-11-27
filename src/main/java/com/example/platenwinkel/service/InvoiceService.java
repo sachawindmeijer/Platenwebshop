@@ -4,6 +4,8 @@ import com.example.platenwinkel.dtos.input.InvoiceInputDto;
 import com.example.platenwinkel.dtos.mapper.InvoiceMapper;
 import com.example.platenwinkel.dtos.output.InvoiceOutputDto;
 
+import com.example.platenwinkel.exceptions.InvalidInputException;
+import com.example.platenwinkel.exceptions.RecordNotFoundException;
 import com.example.platenwinkel.models.Invoice;
 import com.example.platenwinkel.models.Order;
 
@@ -42,18 +44,18 @@ public class InvoiceService {
 
     public InvoiceOutputDto getInvoiceById(Long id) {
         Invoice invoice = invoiceRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invoice not found"));
+                .orElseThrow(() -> new RecordNotFoundException("Invoice not found with ID " + id));
         return InvoiceMapper.fromInvoiceToOutputDto(invoice);
     }
 
     public InvoiceOutputDto createInvoice(InvoiceInputDto inputDto, String username, Long orderId) {
         User user = userRepository.findById(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RecordNotFoundException("User not found " + username));
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new RecordNotFoundException("Order not found " + orderId));
 
         if (invoiceRepository.existsByOrderId(orderId)) {
-            throw new RuntimeException("An invoice already exists for this order.");
+            throw new InvalidInputException("An invoice already exists for this order ID " + orderId);
         }
         Invoice invoice = InvoiceMapper.fromInputDtoToModel(inputDto, user, order);
         invoice.setDate(LocalDate.now());
@@ -65,11 +67,11 @@ public class InvoiceService {
 
     public InvoiceOutputDto updateInvoice(Long id, InvoiceInputDto inputDto) {
         Invoice existingInvoice = invoiceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Invoice not found"));
+                .orElseThrow(() -> new RecordNotFoundException("Invoice not found with ID " + id));
         existingInvoice.setInvoiceNumber(inputDto.getInvoiceNumber());
         existingInvoice.setVAT(inputDto.getVAT());
-        existingInvoice.setInvoiceDate(LocalDate.now()); // or use invoiceInputDto.getInvoiceDate() if available
-        existingInvoice.calculateAmounts(); // Recalculate amounts based on updated VAT or other fields
+        existingInvoice.setInvoiceDate(LocalDate.now());
+        existingInvoice.calculateAmounts();
 
         Invoice updatedInvoice = invoiceRepository.save(existingInvoice);
         return InvoiceMapper.fromInvoiceToOutputDto(updatedInvoice);
@@ -77,7 +79,7 @@ public class InvoiceService {
     }
     public void deleteInvoice(Long id) {
         if (!invoiceRepository.existsById(id)) {
-            throw new IllegalArgumentException("Invoice not found");
+            throw new RecordNotFoundException ("Invoice not found with ID " + id);
         }
         invoiceRepository.deleteById(id);
     }

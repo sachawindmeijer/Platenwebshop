@@ -8,10 +8,10 @@ public class InvoiceOutputDto {
     private String invoiceNumber;
     private Long orderId;
     private LocalDate invoiceDate;
-    private double VAT;
-    private double amountExclVat;
-    private double vatAmount;
-    private double amountInclVat;
+    private Double VAT;
+    private Double amountExclVat;
+    private Double vatAmount;
+    private Double amountInclVat;
 
     public Long getId() {
         return id;
@@ -45,35 +45,35 @@ public class InvoiceOutputDto {
         this.invoiceDate = invoiceDate;
     }
 
-    public double getVAT() {
+    public Double getVAT() {
         return VAT;
     }
 
-    public void setVAT(double VAT) {
+    public void setVAT(Double VAT) {
         this.VAT = VAT;
     }
 
-    public double getAmountExclVat() {
+    public Double getAmountExclVat() {
         return amountExclVat;
     }
 
-    public void setAmountExclVat(double amountExclVat) {
+    public void setAmountExclVat(Double amountExclVat) {
         this.amountExclVat = amountExclVat;
     }
 
-    public double getVatAmount() {
+    public Double getVatAmount() {
         return vatAmount;
     }
 
-    public void setVatAmount(double vatAmount) {
+    public void setVatAmount(Double vatAmount) {
         this.vatAmount = vatAmount;
     }
 
-    public double getAmountInclVat() {
+    public Double getAmountInclVat() {
         return amountInclVat;
     }
 
-    public void setAmountInclVat(double amountInclVat) {
+    public void setAmountInclVat(Double amountInclVat) {
         this.amountInclVat = amountInclVat;
     }
 }

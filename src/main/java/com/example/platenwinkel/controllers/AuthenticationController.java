@@ -48,13 +48,11 @@ public class AuthenticationController {
         String username = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();
 
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Incorrect username or password");
-        }
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         final String jwt = jwtUtl.generateToken(userDetails);
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
                 .body("Token successfully generated");

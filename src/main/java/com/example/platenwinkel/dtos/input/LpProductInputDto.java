@@ -16,14 +16,11 @@ public class LpProductInputDto {
     public Genre genre;
     public int inStock;
 
-    public double  PriceInclVat;
+    public Double PriceInclVat;
 
 
-    public double priceEclVat;//ook deze aanpassen
+    public Double priceEclVat;
 
-
-
-// public double sellPrice; dit niet in de input dto zetten anders kan de klant het zien
 
     public String getArtist() {
         return artist;
@@ -65,19 +62,19 @@ public class LpProductInputDto {
         this.inStock = inStock;
     }
 
-    public double getPriceInclVat() {
+    public Double getPriceInclVat() {
         return PriceInclVat;
     }
 
-    public void setPriceInclVat(double priceInclVat) {
+    public void setPriceInclVat(Double priceInclVat) {
         PriceInclVat = priceInclVat;
     }
 
-    public double getPriceEclVat() {
+    public Double getPriceEclVat() {
         return priceEclVat;
     }
 
-    public void setPriceEclVat(double priceEclVat) {
+    public void setPriceEclVat(Double priceEclVat) {
         this.priceEclVat = priceEclVat;
     }
 }
