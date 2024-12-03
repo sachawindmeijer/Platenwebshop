@@ -58,7 +58,7 @@ class OrderServiceTest {
         lpProduct.setId(3L);
         lpProduct.setArtist("St. Vincent");
         lpProduct.setAlbum("Masseduction");
-        lpProduct.setPriceInclVat(30.00);
+//        lpProduct.setPriceInclVat(30.00);
 
         Map<LpProduct, Integer> items = Map.of(lpProduct, 2);
 
@@ -66,8 +66,8 @@ class OrderServiceTest {
         order1.setId(1L);
         order1.setUser(user1);
         order1.setOrderDate(LocalDate.of(2024, 11, 1));
-        order1.setPaymentStatus(1);
-        order1.setDeliveryStatus(DeliveryStatus.PENDING);
+//        order1.setPaymentStatus(1);
+//        order1.setDeliveryStatus(DeliveryStatus.PENDING);
         order1.setShippingAdress("123 Teststraat");
         order1.setItems(items);
         order1.setShippingCost(6.85);
@@ -76,8 +76,8 @@ class OrderServiceTest {
         order2.setId(2L);
         order2.setUser(user2);
         order2.setOrderDate(LocalDate.of(2024, 12, 1));
-        order2.setPaymentStatus(0);
-        order2.setDeliveryStatus(DeliveryStatus.SHIPPED);
+//        order2.setPaymentStatus(0);
+//        order2.setDeliveryStatus(DeliveryStatus.SHIPPED);
         order2.setShippingAdress("46 Stratenstraat nederland");
         order2.setItems(items);
         order2.setShippingCost(0.0);
@@ -94,8 +94,8 @@ class OrderServiceTest {
         assertEquals(LocalDate.of(2024, 11, 1), firstOrder.getOrderDate());
         assertEquals("123 Teststraat", firstOrder.getShippingAdress());
         assertEquals(6.85, firstOrder.getShippingCost());
-        assertEquals(1, firstOrder.getPaymentStatus());
-        assertEquals(DeliveryStatus.PENDING, firstOrder.getDeliveryStatus());
+//        assertEquals(1, firstOrder.getPaymentStatus());
+//        assertEquals(DeliveryStatus.PENDING, firstOrder.getDeliveryStatus());
 
 
         OrderOutputDto secondOrder = result.get(1);
@@ -104,8 +104,8 @@ class OrderServiceTest {
         assertEquals(LocalDate.of(2024, 12, 1), secondOrder.getOrderDate());
         assertEquals("46 Stratenstraat nederland", secondOrder.getShippingAdress());
         assertEquals(0.0, secondOrder.getShippingCost());
-        assertEquals(0, secondOrder.getPaymentStatus());
-        assertEquals(DeliveryStatus.SHIPPED, secondOrder.getDeliveryStatus());
+//        assertEquals(0, secondOrder.getPaymentStatus());
+//        assertEquals(DeliveryStatus.SHIPPED, secondOrder.getDeliveryStatus());
     }
 
 
@@ -121,13 +121,14 @@ class OrderServiceTest {
         user.setUsername("Trus");
 
         Order order = new Order();
+        order.setOrderDate(LocalDate.now());
         order.setId(id);
         order.setUser(user);
         order.setOrderDate(orderDate);
         order.setShippingAdress(shippingAddress);
         order.setShippingCost(5.0);
-        order.setPaymentStatus(1);
-        order.setDeliveryStatus(DeliveryStatus.PENDING);
+//        order.setPaymentStatus(1);
+//        order.setDeliveryStatus(DeliveryStatus.PENDING);
 
         Mockito.when(orderRepository.findById(id)).thenReturn(Optional.of(order));
         // Act
@@ -139,8 +140,8 @@ class OrderServiceTest {
         assertEquals(shippingAddress, result.getShippingAdress());
         assertEquals(orderDate, result.getOrderDate());
         assertEquals(5.0, result.getShippingCost());
-        assertEquals(1, result.getPaymentStatus());
-        assertEquals(DeliveryStatus.PENDING, result.getDeliveryStatus());
+//        assertEquals(1, result.getPaymentStatus());
+//        assertEquals(DeliveryStatus.PENDING, result.getDeliveryStatus());
     }
 
 

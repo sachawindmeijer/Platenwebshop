@@ -47,12 +47,12 @@ public class LpProductController {
 
         return ResponseEntity.created(uri).body(lpProduct);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<LpProductOutputDto> updateLpProduct(@PathVariable Long id, @Valid @RequestBody LpProductInputDto lpProductInputDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new InvalidInputException("Something went wrong, please check the following fields: " + BindingResultHelper.getErrorMessage(bindingResult));
         }
-
         LpProductOutputDto updatedLpProduct = lpProductService.updateLpProduct(id, lpProductInputDto);
         return ResponseEntity.ok(updatedLpProduct);
     }

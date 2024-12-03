@@ -15,6 +15,7 @@ import com.example.platenwinkel.repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,7 @@ public class OrderService {
         Order order = OrderMapper.fromInputDToOrder(orderInputDto, user, productMap);
 
         Order savedOrder = orderRepository.save(order);
-
+        order.setOrderDate(LocalDate.now());
         return OrderMapper.fromOrderToOutputDto(savedOrder);
     }
 
@@ -74,9 +75,9 @@ public class OrderService {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Order not found with ID: " + id));
 
-        existingOrder.setOrderDate(orderInputDto.getOrderDate());
-        existingOrder.setPaymentStatus(orderInputDto.getPaymentStatus());
-        existingOrder.setDeliveryStatus(orderInputDto.getDeliveryStatus());
+
+//        existingOrder.setPaymentStatus(orderInputDto.getPaymentStatus());
+//        existingOrder.setDeliveryStatus(orderInputDto.getDeliveryStatus());
         existingOrder.setShippingAdress(orderInputDto.getShippingAdress());
 
         Map<Long, Integer> itemsDto = orderInputDto.getItems();
@@ -89,6 +90,7 @@ public class OrderService {
         existingOrder.setItems(items);
 
         existingOrder.calculateAndSetShippingCost();
+
 
         Order updatedOrder = orderRepository.save(existingOrder);
 

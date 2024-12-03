@@ -60,8 +60,8 @@ class ReportServiceTest {
         Map<LpProduct, Integer> order2Items = new HashMap<>();
         order2Items.put(lpProduct2, 5);
 
-        Order order1 = new Order(null, LocalDate.now(), 1, DeliveryStatus.SHIPPED, "123 Music Ave", order1Items);
-        Order order2 = new Order(null, LocalDate.now(), 1, DeliveryStatus.SHIPPED, "456 Melody Rd", order2Items);
+        Order order1 = new Order(null, LocalDate.now(),  "123 Music Ave", order1Items);
+        Order order2 = new Order(null, LocalDate.now(), "456 Melody Rd", order2Items);
 
         List<Order> orders = List.of(order1, order2);
 

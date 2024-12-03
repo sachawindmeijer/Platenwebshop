@@ -1,6 +1,7 @@
 package com.example.platenwinkel.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,9 +10,10 @@ import java.util.List;
 @Entity
 public class Report {
 
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     public String comment;
     private LocalDate rapportDatum;
 

@@ -32,9 +32,7 @@ public class ReportController {
         if (bindingResult.hasErrors()) {
             throw new InvalidInputException("Somthing went wrong, please check the following fields. " + BindingResultHelper.getErrorMessage(bindingResult));
         }
-
         ReportOutputDto createdReport = reportService.createReport(reportInputDto);
-
 
         return new ResponseEntity<>(createdReport, HttpStatus.CREATED);
     }

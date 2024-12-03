@@ -5,6 +5,7 @@ import com.example.platenwinkel.payload.AuthenticationRequest;
 
 import com.example.platenwinkel.service.MyUserDetailService;
 import com.example.platenwinkel.untils.JwtUtil;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class AuthenticationController {
 
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody AuthenticationRequest authenticationRequest) throws Exception {
 
         String username = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();
@@ -57,5 +58,4 @@ public class AuthenticationController {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
                 .body("Token successfully generated");
     }
-
 }

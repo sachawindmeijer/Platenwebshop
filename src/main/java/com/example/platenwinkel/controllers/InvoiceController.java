@@ -38,7 +38,7 @@ public class InvoiceController {
     }
 
     @PostMapping
-    public ResponseEntity<InvoiceOutputDto> createInvoice(@RequestBody InvoiceInputDto invoiceInputDto,
+    public ResponseEntity<InvoiceOutputDto> createInvoice(@Valid @RequestBody InvoiceInputDto invoiceInputDto,
                                                           @RequestParam String username,
                                                           @RequestParam Long orderId) {
         InvoiceOutputDto createdInvoice = invoiceService.createInvoice(invoiceInputDto, username, orderId);
@@ -46,8 +46,10 @@ public class InvoiceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InvoiceOutputDto> updateInvoice(@PathVariable Long id,
-                                                          @RequestBody InvoiceInputDto inputDto) {
+    public ResponseEntity<InvoiceOutputDto> updateInvoice(@PathVariable Long id, @Valid @RequestBody InvoiceInputDto inputDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidInputException("Something went wrong, please check the following fields: " + BindingResultHelper.getErrorMessage(bindingResult));
+        }
         InvoiceOutputDto updatedInvoice = invoiceService.updateInvoice(id, inputDto);
         return ResponseEntity.ok(updatedInvoice);
     }

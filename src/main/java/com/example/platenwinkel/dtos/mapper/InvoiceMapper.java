@@ -18,9 +18,11 @@ public class InvoiceMapper {
         Invoice invoice = new Invoice();
         invoice.setOrder(orders);
         invoice.setInvoiceNumber(invoiceInputDto.getInvoiceNumber());
-        invoice.setVAT(invoiceInputDto.getVAT());
+        invoice.setPaymentStatus(invoiceInputDto.getPaymentStatus());
+       invoice.setDeliveryStatus(invoiceInputDto.getDeliveryStatus());
+
         invoice.setInvoiceDate(LocalDate.now());
-        invoice.calculateAmounts(); // Bereken de bedragen op basis van het order en de BTW
+
         return invoice;
 
     }
@@ -30,12 +32,14 @@ public class InvoiceMapper {
 
         dto.setId(invoice.getId());
         dto.setInvoiceNumber(invoice.getInvoiceNumber());
+
         dto.setOrderId(invoice.getOrder().getId());
         dto.setInvoiceDate(invoice.getInvoiceDate());
-        dto.setVAT(invoice.getVAT());
-        dto.setAmountExclVat(invoice.getAmountExclVat());
-        dto.setVatAmount(invoice.getVatAmount());
-        dto.setAmountInclVat(invoice.getAmountInclVat());
+        dto.setDeliveryStatus(invoice.getDeliveryStatus());
+        dto.setPaymentStatus(invoice.getPaymentStatus());
+        dto.setTotalCost(invoice.getOrder().getTotalOrderAmount());
+        dto.setTotalAmountExclVat(invoice.getTotalAmountExclVat());
+
         return dto;
     }
 

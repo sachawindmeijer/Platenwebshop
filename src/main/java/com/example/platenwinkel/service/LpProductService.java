@@ -67,9 +67,11 @@ public class LpProductService {
         if (lpProductInputDto.getArtist() == null || lpProductInputDto.getArtist().isBlank()) {
             throw new InvalidInputException("Artist field cannot be empty.");
         }
-        if (lpProductInputDto.getPriceInclVat() == null || lpProductInputDto.getPriceInclVat() <= 0) {
-            throw new InvalidInputException("Price (including VAT) must be greater than 0.");
+
+        if (lpProductInputDto.getPriceEclVat() == null || lpProductInputDto.getPriceEclVat() <= 0) {
+            throw new InvalidInputException("Price (excluding VAT) must be greater than 0.");
         }
+
         if (lpProductInputDto.getAlbum() == null || lpProductInputDto.getAlbum().isBlank()) {
             throw new InvalidInputException("Album field cannot be empty.");
         }
@@ -93,7 +95,7 @@ public class LpProductService {
             existingLpProduct.setDescription(lpProductInputDto.getDescription());
             existingLpProduct.setGenre(lpProductInputDto.getGenre());
             existingLpProduct.setInStock(lpProductInputDto.getInStock());
-            existingLpProduct.setPriceInclVat(lpProductInputDto.getPriceInclVat());
+            existingLpProduct.setPriceInclVat();
             existingLpProduct.setPriceEclVat(lpProductInputDto.getPriceEclVat());
 
         LpProduct updatedProduct = lpProductRepository.save(existingLpProduct);
