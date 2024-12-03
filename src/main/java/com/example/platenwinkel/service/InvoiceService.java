@@ -14,6 +14,7 @@ import com.example.platenwinkel.models.User;
 import com.example.platenwinkel.repositories.InvoiceRepository;
 import com.example.platenwinkel.repositories.OrderRepository;
 import com.example.platenwinkel.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,6 +22,8 @@ import java.util.List;
 
 
 import java.util.stream.Collectors;
+
+import static com.example.platenwinkel.models.Invoice.VAT_RATE;
 
 @Service
 public class InvoiceService {
@@ -58,7 +61,14 @@ public class InvoiceService {
             throw new InvalidInputException("An invoice already exists for this order ID " + orderId);
         }
         Invoice invoice = InvoiceMapper.fromInputDtoToModel(inputDto, user, order);
+        invoice.setOrder(order);
         invoice.setDate(LocalDate.now());
+        double totalAmountExclVat = order.getItems().entrySet().stream()
+                .mapToDouble(entry -> entry.getKey().getPriceEclVat() * entry.getValue())
+                .sum();
+        double totalCost = totalAmountExclVat * (1 + VAT_RATE) + order.getShippingCost();
+        invoice.setTotalAmountExclVat(totalAmountExclVat);
+        invoice.setTotalCost(totalCost);
         Invoice savedInvoice = invoiceRepository.save(invoice);
 
         return InvoiceMapper.fromInvoiceToOutputDto(savedInvoice);
@@ -68,10 +78,11 @@ public class InvoiceService {
     public InvoiceOutputDto updateInvoice(Long id, InvoiceInputDto inputDto) {
         Invoice existingInvoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Invoice not found with ID " + id));
+
         existingInvoice.setInvoiceNumber(inputDto.getInvoiceNumber());
-        existingInvoice.setVAT(inputDto.getVAT());
+        existingInvoice.setPaymentStatus(inputDto.getPaymentStatus());
+        existingInvoice.setDeliveryStatus(inputDto.getDeliveryStatus());
         existingInvoice.setInvoiceDate(LocalDate.now());
-        existingInvoice.calculateAmounts();
 
         Invoice updatedInvoice = invoiceRepository.save(existingInvoice);
         return InvoiceMapper.fromInvoiceToOutputDto(updatedInvoice);

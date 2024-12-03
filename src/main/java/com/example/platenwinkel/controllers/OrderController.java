@@ -63,7 +63,10 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderOutputDto> updateOrder(@PathVariable Long id, @RequestBody OrderInputDto orderInputDto) {
+    public ResponseEntity<OrderOutputDto> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderInputDto orderInputDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidInputException("Something went wrong, please check the following fields: " + BindingResultHelper.getErrorMessage(bindingResult));
+        }
         OrderOutputDto updatedOrderOutputDto = orderService.updateOrder(id, orderInputDto);
         return ResponseEntity.ok(updatedOrderOutputDto);
     }

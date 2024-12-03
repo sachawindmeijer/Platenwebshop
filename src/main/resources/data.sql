@@ -18,10 +18,10 @@ VALUES
     (5, 'Christine and the Queens', 'Chaleur Humaine', 'A bold statement from a queer French artist', 'POP', 20, 28.00, 23.00),
     (6, 'Daft Punk', 'Random Access Memories', 'An electronic music album by Daft Punk', 'POP', 60, 32.00, 27.00);
 
-INSERT INTO customer_order (username, order_date, shipping_cost, payment_status, delivery_status, shipping_adress)
-VALUES  ('Klaas', '2024-10-25', 6.85, 0, 'PENDING', 'Kerkstraat 12, 1017 GP, Amsterdam, Nederland' ),
-        ('Marie', '2024-10-30', 6.85, 1, 'SHIPPED', 'Havenweg 5, 3511 CA, Utrecht, Nederland' ),
-        ('Sam', '2024-10-28', 6.85, 1, 'PROCESSING', 'Dorpsstraat 22, 5611 LC, Eindhoven, Nederland' );
+INSERT INTO customer_order (username, order_date , shipping_cost, shipping_adress)
+VALUES  ('Klaas', '2024-10-25', 0, 'Kerkstraat 12, 1017 GP, Amsterdam, Nederland' ),
+        ('Marie', '2024-10-30', 6.85, 'Havenweg 5, 3511 CA, Utrecht, Nederland' ),
+        ('Sam', '2024-10-28', 6.85, 'Dorpsstraat 22, 5611 LC, Eindhoven, Nederland' );
 
 INSERT INTO order_items (order_id, lpproduct_id, quantity)
 VALUES
@@ -29,10 +29,11 @@ VALUES
     (2, 6, 1),
     (3, 6, 1);
 
-INSERT INTO Invoice (order_id, invoice_number, VAT, date, invoice_date, amount_excl_vat, vat_amount, amount_incl_vat)
-VALUES   (1, 'INV10001', 21.0, '2024-10-29', '2024-10-29', 100.00, 21.00, 121.00),
-        (2, 'INV10002', 21.0, '2024-10-29', '2024-10-29', 200.00, 42.00, 242.00),
-         (3, 'INV10003', 9.0, '2024-10-29', '2024-10-29', 150.00, 13.50, 163.50);
+INSERT INTO Invoice (order_id, invoice_number, date, payment_status, delivery_status, invoice_date, total_cost, total_amount_excl_vat)
+VALUES
+    (1, 'INV10001', '2024-10-29', 0, 'PENDING', '2024-10-29', 60.00, 50.00),
+    (2, 'INV10002', '2024-10-29', 1, 'SHIPPED', '2024-10-29', 38.85, 27.00),
+    (3, 'INV10003', '2024-10-29', 1, 'PROCESSING', '2024-10-29', 38.85, 27.00);
 
 INSERT INTO report (comment, rapport_datum, total_revenue)
 VALUES

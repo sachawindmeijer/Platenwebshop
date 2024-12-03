@@ -3,6 +3,7 @@ package com.example.platenwinkel.models;
 import com.example.platenwinkel.enumeration.Genre;
 import com.example.platenwinkel.helper.PriceCalculator;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -14,21 +15,25 @@ public class LpProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @NotBlank
     private String artist;
+    @NotBlank
     private String album;
+    @Size(max = 500)
     private String description;
     private LocalDate releaseDate;
     @Enumerated(EnumType.STRING)
     private Genre genre;
+    @Min(value = 0)
     private int inStock;
 
 
-
-
     private Double priceInclVat;
+    @NotNull
+    @Positive
     private Double priceEclVat;
 
-    public LpProduct(Long id, String artist, String album, String description, Genre genre, int inStock, double priceEclVat) {
+    public LpProduct(Long id, String artist, String album, String description, Genre genre, int inStock, Double priceEclVat) {
         this.id = id;
         this.artist = artist;
         this.album = album;
@@ -38,9 +43,7 @@ public class LpProduct {
         this.priceEclVat = priceEclVat;
     }
     public LpProduct() {
-
     }
-
 
     public void setId(Long id) {
         this.id = id;
@@ -83,8 +86,13 @@ public class LpProduct {
         return priceInclVat;
     }
 
-    public void setPriceInclVat(Double priceInclVat) {
-        this.priceInclVat = PriceCalculator.calculatePriceInclVat(priceEclVat);
+    public void setPriceInclVat() {
+        if (this.priceEclVat != null && this.priceEclVat > 0) {
+            this.priceInclVat = PriceCalculator.calculatePriceInclVat(this.priceEclVat);
+        } else {
+            // Optioneel: je kunt hier een foutmelding geven of een standaardwaarde toewijzen
+            throw new IllegalArgumentException("Price (excluding VAT) must be greater than 0 to calculate price including VAT.");
+        };
     }
 
     public Double getPriceEclVat() {
@@ -98,6 +106,7 @@ public class LpProduct {
     public Long getId() {
         return id;
     }
+
     public LocalDate getReleaseDate() {
         return releaseDate;
     }

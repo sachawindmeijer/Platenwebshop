@@ -1,14 +1,21 @@
 package com.example.platenwinkel.dtos.input;
 
+import com.example.platenwinkel.enumeration.DeliveryStatus;
+import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
 public class InvoiceInputDto {
-
+    @NotBlank
     private String invoiceNumber;
-    private Double VAT;
 
+    @Min(value = 0)
+    @Max(value = 1)
+    public int paymentStatus;// 0 = not paid, 1 = paid
+    @NotNull
+    public DeliveryStatus deliveryStatus;
 
 
     public String getInvoiceNumber() {
@@ -19,11 +26,11 @@ public class InvoiceInputDto {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public Double getVAT() {
-        return VAT;
+    public int getPaymentStatus() {
+        return paymentStatus;
     }
 
-    public void setVAT(Double VAT) {
-        this.VAT = VAT;
+    public DeliveryStatus getDeliveryStatus() {
+        return deliveryStatus;
     }
 }

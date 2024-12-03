@@ -1,7 +1,11 @@
 package com.example.platenwinkel.models;
 
-import com.example.platenwinkel.enumeration.DeliveryStatus;
+
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
@@ -9,6 +13,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.time.LocalTime.now;
 
 @Entity
 @Table(name = "customer_order")
@@ -25,13 +31,14 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private List<LpProduct> products;
-    @Column(nullable = false)
-    private LocalDate orderDate;
-    private Double shippingCost;
-    private int paymentStatus; // 0 = not paid, 1 = paid
-    @Enumerated(EnumType.STRING)
-    private DeliveryStatus deliveryStatus;
 
+    @Column
+    private LocalDate orderDate;
+    @PositiveOrZero
+    private Double shippingCost;
+
+    @NotNull
+    @Size(min = 5, max = 255)
     @Column(nullable = false)
     private String shippingAdress;
 
@@ -40,8 +47,10 @@ public class Order {
             name = "order_items",
             joinColumns = @JoinColumn(name = "order_id")
     )
+
     @MapKeyJoinColumn(name = "lpproduct_id")
     @Column(name = "quantity")
+    @NotEmpty
     private Map<LpProduct, Integer> items = new HashMap<>();
 
     private static final Double FREE_SHIPPING_THRESHOLD = 50.00;
@@ -50,11 +59,10 @@ public class Order {
     public Order() {
     }
 
-    public Order(User user, LocalDate orderDate, int paymentStatus, DeliveryStatus deliveryStatus, String shippingAdress, Map<LpProduct, Integer> items) {
+    public Order(User user, LocalDate orderDate, String shippingAdress, Map<LpProduct, Integer> items) {
         this.user = user;
         this.orderDate = orderDate;
-        this.paymentStatus = paymentStatus;
-        this.deliveryStatus = deliveryStatus;
+
         this.shippingAdress = shippingAdress;
         this.items = items;
     }
@@ -66,8 +74,17 @@ public class Order {
     }
 
     public void calculateAndSetShippingCost() {
-        Double totalAmount = getTotalOrderAmount();
-        this.shippingCost = totalAmount > FREE_SHIPPING_THRESHOLD ? 0.00 : STANDARD_SHIPPING_COST;
+        double totalItemCost = items.entrySet().stream()
+                .mapToDouble(entry -> entry.getKey().getPriceInclVat() * entry.getValue())
+                .sum();
+        this.shippingCost = totalItemCost >= FREE_SHIPPING_THRESHOLD ? 0.0 : STANDARD_SHIPPING_COST;
+    }
+
+    public double calculateTotalCost() {
+        double totalItemCost = items.entrySet().stream()
+                .mapToDouble(entry -> entry.getKey().getPriceInclVat() * entry.getValue())
+                .sum();
+        return totalItemCost + (shippingCost != null ? shippingCost : 0.0);
     }
 
     public Double getTotalCost() {
@@ -114,21 +131,16 @@ public class Order {
         this.shippingCost = shippingCost;
     }
 
-    public int getPaymentStatus() {
-        return paymentStatus;
-    }
+//    public int getPaymentStatus() {
+//        return paymentStatus;
+//    }
+//
+//    public void setPaymentStatus(int paymentStatus) {
+//        this.paymentStatus = paymentStatus;
+//    }
 
-    public void setPaymentStatus(int paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
 
-    public DeliveryStatus getDeliveryStatus() {
-        return deliveryStatus;
-    }
 
-    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
-    }
 
     public String getShippingAdress() {
         return shippingAdress;
@@ -145,7 +157,7 @@ public class Order {
                 "customer=" + user +
                 ", items=" + items +
                 ", orderDate=" + orderDate +
-                ", paymentStatus=" + (paymentStatus == 1 ? "Paid" : "Not Paid") +
+
                 '}';
     }
 

@@ -1,5 +1,8 @@
 package com.example.platenwinkel.dtos.output;
 
+import com.example.platenwinkel.enumeration.DeliveryStatus;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -8,10 +11,11 @@ public class InvoiceOutputDto {
     private String invoiceNumber;
     private Long orderId;
     private LocalDate invoiceDate;
-    private Double VAT;
-    private Double amountExclVat;
-    private Double vatAmount;
-    private Double amountInclVat;
+    public int paymentStatus;// 0 = not paid, 1 = paid
+    private Double totalAmountExclVat;  // Totaal bedrag exclusief btw
+    private Double totalCost;
+    public DeliveryStatus deliveryStatus;
+
 
     public Long getId() {
         return id;
@@ -45,35 +49,35 @@ public class InvoiceOutputDto {
         this.invoiceDate = invoiceDate;
     }
 
-    public Double getVAT() {
-        return VAT;
+    public Double getTotalAmountExclVat() {
+        return totalAmountExclVat;
     }
 
-    public void setVAT(Double VAT) {
-        this.VAT = VAT;
+    public void setTotalAmountExclVat(Double totalAmountExclVat) {
+        this.totalAmountExclVat = totalAmountExclVat;
     }
 
-    public Double getAmountExclVat() {
-        return amountExclVat;
+    public Double getTotalCost() {
+        return totalCost;
     }
 
-    public void setAmountExclVat(Double amountExclVat) {
-        this.amountExclVat = amountExclVat;
+    public void setTotalCost(Double totalCost) {
+        this.totalCost = totalCost;
     }
 
-    public Double getVatAmount() {
-        return vatAmount;
+    public int getPaymentStatus() {
+        return paymentStatus;
     }
 
-    public void setVatAmount(Double vatAmount) {
-        this.vatAmount = vatAmount;
+    public void setPaymentStatus(int paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
-    public Double getAmountInclVat() {
-        return amountInclVat;
+    public DeliveryStatus getDeliveryStatus() {
+        return deliveryStatus;
     }
 
-    public void setAmountInclVat(Double amountInclVat) {
-        this.amountInclVat = amountInclVat;
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
     }
 }

@@ -14,8 +14,9 @@ public class LpProductMapper {
         lp.setDescription(lpProductInputDto.getDescription());
         lp.setGenre(lpProductInputDto.getGenre());
         lp.setInStock(lpProductInputDto.getInStock());
-        lp.setPriceInclVat(lpProductInputDto.getPriceInclVat());
+
         lp.setPriceEclVat(lpProductInputDto.getPriceEclVat());
+        lp.setPriceInclVat();
 
         return lp;
     }
@@ -28,6 +29,7 @@ public class LpProductMapper {
         lpProductOutputDto.setDescription(lpProduct.getDescription());
         lpProductOutputDto.setGenre(lpProduct.getGenre());
         lpProductOutputDto.setInStock(lpProduct.getInStock());
+
         lpProductOutputDto.setPriceInclVat(lpProduct.getPriceInclVat());
         lpProductOutputDto.setPriceEclVat(lpProduct.getPriceEclVat());
 

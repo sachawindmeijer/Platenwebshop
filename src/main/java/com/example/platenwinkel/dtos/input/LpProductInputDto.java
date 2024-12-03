@@ -1,25 +1,27 @@
 package com.example.platenwinkel.dtos.input;
 
 import com.example.platenwinkel.enumeration.Genre;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-
+import jakarta.validation.constraints.*;
 
 
 public class LpProductInputDto {
 
 
-    @NotBlank
-    public String artist;
-    public String album;
-    public String description;
-    public Genre genre;
-    public int inStock;
+        @NotBlank
+        public String artist;
 
-    public Double PriceInclVat;
+        @NotBlank
+        public String album;
 
+        @Size(max = 500)
+        public String description;
+        public Genre genre;
+        @Min(value = 0)
+        public int inStock;
 
-    public Double priceEclVat;
+         @NotNull
+    @Positive
+        public Double priceEclVat;
 
 
     public String getArtist() {
@@ -62,13 +64,6 @@ public class LpProductInputDto {
         this.inStock = inStock;
     }
 
-    public Double getPriceInclVat() {
-        return PriceInclVat;
-    }
-
-    public void setPriceInclVat(Double priceInclVat) {
-        PriceInclVat = priceInclVat;
-    }
 
     public Double getPriceEclVat() {
         return priceEclVat;

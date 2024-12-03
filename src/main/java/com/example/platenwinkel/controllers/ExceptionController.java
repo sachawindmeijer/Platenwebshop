@@ -12,7 +12,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -22,14 +24,24 @@ public class ExceptionController {
     public ResponseEntity<Object> exception(RecordNotFoundException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
+// dit stond eerst
+@ExceptionHandler(value= MethodArgumentNotValidException.class)
+public ResponseEntity<List<String>>exception (MethodArgumentNotValidException exception){
+    return new ResponseEntity<>(exception.getBindingResult().getFieldErrors()
+            .stream()
+            .map(fieldError -> fieldError.getField()+ " " +fieldError.getDefaultMessage())
+            .collect(Collectors.toList()), HttpStatus.BAD_REQUEST);
+}
+//    chatgpt
+//@ExceptionHandler(value = MethodArgumentNotValidException.class)
+//public ResponseEntity<List<String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+//    List<String> errors = ex.getBindingResult().getFieldErrors()
+//            .stream()
+//            .map(fieldError -> fieldError.getField() + " " + fieldError.getDefaultMessage())
+//            .collect(Collectors.toList());
+//    return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+//}
 
-    @ExceptionHandler(value= MethodArgumentNotValidException.class)
-    public ResponseEntity<List<String>>exception (MethodArgumentNotValidException exception){
-        return new ResponseEntity<>(exception.getBindingResult().getFieldErrors()
-                .stream()
-                .map(fieldError -> fieldError.getField()+ " " +fieldError.getDefaultMessage())
-                .collect(Collectors.toList()), HttpStatus.BAD_REQUEST);
-    }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<String> handleBadRequestException(BadRequestException ex) {
