@@ -63,6 +63,7 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             throw new InvalidInputException("Somthing went wrong, please check the following fields. " + BindingResultHelper.getErrorMessage(bindingResult));
         }
+
         String newUsername = userService.createUser(dto);
 
         if (dto.getAuthorities() != null && !dto.getAuthorities().isEmpty()) {
