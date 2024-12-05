@@ -1,15 +1,21 @@
 INSERT INTO authorities (username, authority) VALUES ('user', 'ROLE_USER');
 INSERT INTO authorities (username, authority) VALUES ('admin', 'ROLE_ADMIN');
+SELECT * FROM users;
 SELECT * FROM authorities;
 INSERT INTO authorities (username, authority)
-VALUES  ('Klaas', 'ROLE_ADMIN'),
+VALUES  ('Kim', 'ROLE_ADMIN'),
         ('Marie', 'ROLE_USER'),
         ('Sam', 'ROLE_USER');
 
+-- kim password1234
+-- Marie word1234
+-- Sam pass1234
 INSERT INTO users (username, password, email, enabled)
-VALUES  ('Klaas', '$2a$10$/VA5LkLktaAR1r/E.delUe/L09Zd3p38rEBB4E110iEkjR2ALEQxq','klaas@test.nl', TRUE),
-        ('Marie', '$2a$10$vR7NOB0ewdxFUW.bikAa5ukBt85WQ6DFwu3ATRurQrsNFTHZ72jtu', 'marie@test.nl', TRUE),
-        ('Sam', '$2a$12$IzA1Ja1LH4PSMoro9PeITO1etDlknPjSX1nLusgt1vi9c1uaEXdEK', 'sam@test.nl', TRUE);
+VALUES  ('Kim', '$2a$10$tmu29a34zspov1NpW2BB9OF2.4y.OpzQfuQXTnuhAHpD6jq7jNAkq','kim@example.com', TRUE),
+        ('Marie', '$2a$10$2uVIL1BvmJbCSUqPljU9muUKN5vvWxNqDMbiq3MHdglqbxlau86A6', 'marie@mail.com', TRUE),
+        ('Sam', '$2a$10$fjVHliO2BH8woSzLlAIaXeWX1d0Sth8Q9yI8wuN.sCJBNjEhi4Oii', 'sam@test.nl', TRUE);
+
+
 
 INSERT INTO Lp_Product (id, artist, album, description, genre, in_Stock, price_incl_vat, price_ecl_vat)
 VALUES
@@ -19,7 +25,7 @@ VALUES
     (6, 'Daft Punk', 'Random Access Memories', 'An electronic music album by Daft Punk', 'POP', 60, 32.00, 27.00);
 
 INSERT INTO customer_order (username, order_date , shipping_cost, shipping_adress)
-VALUES  ('Klaas', '2024-10-25', 0, 'Kerkstraat 12, 1017 GP, Amsterdam, Nederland' ),
+VALUES  ('Kim', '2024-10-25', 0, 'Kerkstraat 12, 1017 GP, Amsterdam, Nederland' ),
         ('Marie', '2024-10-30', 6.85, 'Havenweg 5, 3511 CA, Utrecht, Nederland' ),
         ('Sam', '2024-10-28', 6.85, 'Dorpsstraat 22, 5611 LC, Eindhoven, Nederland' );
 
