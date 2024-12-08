@@ -1,6 +1,7 @@
 package com.example.platenwinkel.models;
 
 import com.example.platenwinkel.enumeration.Genre;
+import com.example.platenwinkel.exceptions.InvalidInputException;
 import com.example.platenwinkel.helper.PriceCalculator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -13,7 +14,7 @@ public class LpProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NotBlank
     private String artist;
@@ -24,12 +25,13 @@ public class LpProduct {
     private LocalDate releaseDate;
     @Enumerated(EnumType.STRING)
     private Genre genre;
+    @NotNull
     @Min(value = 0)
     private int inStock;
 
 
     private Double priceInclVat;
-    @NotNull
+
     @Positive
     private Double priceEclVat;
 
@@ -90,8 +92,8 @@ public class LpProduct {
         if (this.priceEclVat != null && this.priceEclVat > 0) {
             this.priceInclVat = PriceCalculator.calculatePriceInclVat(this.priceEclVat);
         } else {
-            // Optioneel: je kunt hier een foutmelding geven of een standaardwaarde toewijzen
-            throw new IllegalArgumentException("Price (excluding VAT) must be greater than 0 to calculate price including VAT.");
+            // moet ik hier invailidexception plaatsen i.p.v. IllegalArgumentException
+            throw new InvalidInputException("Price (excluding VAT) must be greater than 0 to calculate price including VAT.");
         };
     }
 

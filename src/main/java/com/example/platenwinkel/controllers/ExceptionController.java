@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,58 +20,76 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ExceptionController {
+    public static class ErrorResponse {
+        private String error;
+        private String message;
+
+        public ErrorResponse(String error, String message) {
+            this.error = error;
+            this.message = message;
+        }
+
+        public String getError() {
+            return error;
+        }
+
+        public void setError(String error) {
+            this.error = error;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
 
     @ExceptionHandler(value = RecordNotFoundException.class)
-    public ResponseEntity<Object> exception(RecordNotFoundException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse> handleRecordNotFoundException(RecordNotFoundException exception) {
+        ErrorResponse errorResponse = new ErrorResponse("Not Found", exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
-// dit stond eerst
-@ExceptionHandler(value= MethodArgumentNotValidException.class)
-public ResponseEntity<List<String>>exception (MethodArgumentNotValidException exception){
-    return new ResponseEntity<>(exception.getBindingResult().getFieldErrors()
-            .stream()
-            .map(fieldError -> fieldError.getField()+ " " +fieldError.getDefaultMessage())
-            .collect(Collectors.toList()), HttpStatus.BAD_REQUEST);
-}
-//    chatgpt
-//@ExceptionHandler(value = MethodArgumentNotValidException.class)
-//public ResponseEntity<List<String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-//    List<String> errors = ex.getBindingResult().getFieldErrors()
-//            .stream()
-//            .map(fieldError -> fieldError.getField() + " " + fieldError.getDefaultMessage())
-//            .collect(Collectors.toList());
-//    return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-//}
 
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<String> handleBadRequestException(BadRequestException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<List<String>> handleValidationExceptions(MethodArgumentNotValidException exception) {
+        List<String> errors = exception.getBindingResult().getFieldErrors()
+                .stream()
+                .map(fieldError -> fieldError.getField() + " " + fieldError.getDefaultMessage())
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found: " + ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException exception) {
+        ErrorResponse errorResponse = new ErrorResponse("Not Found", "User not found: " + exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    // later bijgevoegd
     @ExceptionHandler(value = InvalidInputException.class)
-    public ResponseEntity<Object> handleInvalidInputException(InvalidInputException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-    @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<Object> handleGeneralException(Exception exception) {
-        return new ResponseEntity<>("An unexpected error occurred: " + exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleInvalidInputException(InvalidInputException exception) {
+        ErrorResponse errorResponse = new ErrorResponse("Invalid Input", exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(DuplicateRecordException.class)
-    public ResponseEntity<String> handleDuplicateRecordException(DuplicateRecordException exception) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception exception) {
+        exception.printStackTrace();
+        ErrorResponse errorResponse = new ErrorResponse("Internal Server Error", "An unexpected error occurred.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = DuplicateRecordException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateRecordException(DuplicateRecordException exception) {
+        ErrorResponse errorResponse = new ErrorResponse("Conflict", exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException exception) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Incorrect username or password");
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException exception) {
+        ErrorResponse errorResponse = new ErrorResponse("Unauthorized", "Incorrect username or password");
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
-
 }
 

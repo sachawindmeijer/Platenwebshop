@@ -65,7 +65,7 @@ public class ReportService {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
-        Double totalRevenue = orders.stream()
+        double totalRevenue = orders.stream()
                 .mapToDouble(Order::getTotalOrderAmount)
                 .sum();
 

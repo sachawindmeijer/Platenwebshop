@@ -24,6 +24,7 @@ public class LpProductMapper {
 
     public static LpProductOutputDto fromModelToOutputDto(LpProduct lpProduct) {
         LpProductOutputDto lpProductOutputDto = new LpProductOutputDto();
+        lpProductOutputDto.setId(lpProduct.getId());
         lpProductOutputDto.setArtist(lpProduct.getArtist());
         lpProductOutputDto.setAlbum(lpProduct.getAlbum());
         lpProductOutputDto.setDescription(lpProduct.getDescription());

@@ -45,6 +45,7 @@ public class User {
     @Column
     private String apikey;
     @Email
+    @NotBlank
     @Size(max = 100)
     @Column
     private String email;
