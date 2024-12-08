@@ -21,6 +21,7 @@ public class UserInputDto {
     public Boolean enabled;
     public String apikey;
     @Email
+    @NotBlank
     @Size(max = 100)
     public String email;
 

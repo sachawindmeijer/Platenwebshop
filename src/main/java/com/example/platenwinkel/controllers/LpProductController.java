@@ -1,11 +1,13 @@
 package com.example.platenwinkel.controllers;
 
 import com.example.platenwinkel.dtos.input.LpProductInputDto;
+import com.example.platenwinkel.dtos.output.InvoiceOutputDto;
 import com.example.platenwinkel.dtos.output.LpProductOutputDto;
 import com.example.platenwinkel.exceptions.InvalidInputException;
 
 import com.example.platenwinkel.helper.BindingResultHelper;
 import com.example.platenwinkel.helper.PriceCalculator;
+import com.example.platenwinkel.models.LpProduct;
 import com.example.platenwinkel.service.LpProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +58,11 @@ public class LpProductController {
         LpProductOutputDto updatedLpProduct = lpProductService.updateLpProduct(id, lpProductInputDto);
         return ResponseEntity.ok(updatedLpProduct);
     }
-
+    @GetMapping
+    public ResponseEntity<List<LpProductOutputDto>> getAllLpProducts() {
+        List<LpProductOutputDto> lpProducts = lpProductService.getAllLps();
+        return ResponseEntity.ok(lpProducts);
+    }
     @GetMapping
     public ResponseEntity<List<LpProductOutputDto>> getAllLps(@RequestParam(value = "artist", required = false) Optional<String> artist) {
         List<LpProductOutputDto> dtos = artist.isEmpty() ? lpProductService.getAllLps() : lpProductService.getAllLpProductsByArtist(artist.get());

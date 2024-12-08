@@ -16,6 +16,7 @@ public class LpProductInputDto {
         @Size(max = 500)
         public String description;
         public Genre genre;
+
         @Min(value = 0)
         public int inStock;
 

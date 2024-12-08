@@ -33,14 +33,15 @@ public class LpProductService {
 
 
     public List<LpProductOutputDto> getAllLpProductsByArtist(String artist) {
-        List<LpProduct> lpProductlist = lpProductRepository.findAllLpProductsByArtistEqualsIgnoreCase(artist);
-        List<LpProductOutputDto> lpDtoList = new ArrayList<>();
-
-        for (LpProduct lp : lpProductlist) {
-            LpProductOutputDto dto = LpProductMapper.fromModelToOutputDto(lp);
-            lpDtoList.add(dto);
+        // Validate the input
+        if (artist == null || artist.isBlank()) {
+            throw new InvalidInputException("Artist field cannot be empty.");
         }
-        return lpDtoList;
+
+        List<LpProduct> lpProductlist = lpProductRepository.findAllLpProductsByArtistEqualsIgnoreCase(artist);
+        return lpProductlist.stream()
+                .map(LpProductMapper::fromModelToOutputDto)
+                .collect(Collectors.toList());
     }
 
     public LpProductOutputDto getLpProductById(Long id) {
@@ -53,7 +54,7 @@ public class LpProductService {
 
         validateLpProductInput(lpProductInputDto);
 
-
+        // Check for duplicate product
         checkForDuplicateProduct(lpProductInputDto);
 
         LpProduct lpProduct = LpProductMapper.fromInputDtoToModel(lpProductInputDto);
@@ -63,30 +64,39 @@ public class LpProductService {
         return LpProductMapper.fromModelToOutputDto(savedProduct);
     }
 
+
+
     private void validateLpProductInput(LpProductInputDto lpProductInputDto) {
+        // Check if artist is valid
         if (lpProductInputDto.getArtist() == null || lpProductInputDto.getArtist().isBlank()) {
             throw new InvalidInputException("Artist field cannot be empty.");
         }
 
+        // Check if price is valid
         if (lpProductInputDto.getPriceEclVat() == null || lpProductInputDto.getPriceEclVat() <= 0) {
             throw new InvalidInputException("Price (excluding VAT) must be greater than 0.");
         }
 
+        // Check if album is valid
         if (lpProductInputDto.getAlbum() == null || lpProductInputDto.getAlbum().isBlank()) {
             throw new InvalidInputException("Album field cannot be empty.");
         }
     }
 
     private void checkForDuplicateProduct(LpProductInputDto lpProductInputDto) {
+        // Check if product with same album and artist already exists
         boolean productExists = lpProductRepository.existsByAlbumAndArtist(
-                lpProductInputDto.getAlbum(), lpProductInputDto.getArtist()
-        );
+                lpProductInputDto.getAlbum(), lpProductInputDto.getArtist());
+
         if (productExists) {
             throw new DuplicateRecordException("An LP product with the same album and artist already exists.");
         }
     }
 
     public LpProductOutputDto updateLpProduct(Long id, LpProductInputDto lpProductInputDto) {
+
+        validateLpProductInput(lpProductInputDto);
+
         LpProduct existingLpProduct = lpProductRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("No LP product found with ID: " + id));
 

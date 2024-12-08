@@ -78,17 +78,49 @@ class LpProductControllerTest {
     }
 
     @Test
+    void updateLpProduct() throws Exception {
+        // Arrange
+        Long productId = 3L; // Bestaande ID van een product dat in de testdata of een mock zit
+        String updateJson = """
+                {
+                "artist": "St. Vincent",
+                "album": "Masseduction",
+                "description": "Electropop album by a icon",
+                "genre": "ROCK",
+                "inStock": 25,
+                "priceEclVat": 30.00
+                }""";
+
+        // Act
+        MvcResult result = this.mockMvc
+                .perform(MockMvcRequestBuilders.put("/lpproducts/" + productId)
+                        .contentType(APPLICATION_JSON)
+                        .content(updateJson))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        // Assert
+        String jsonResponse = result.getResponse().getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(jsonResponse);
+
+        assertEquals("St. Vincent", jsonNode.get("artist").asText(), "Artist should be updated");
+        assertEquals("Masseduction", jsonNode.get("album").asText(), "Album should be updated");
+        assertEquals("Electropop album by a icon", jsonNode.get("description").asText(), "Description should be updated");
+        assertEquals("ROCK", jsonNode.get("genre").asText(), "Genre should be updated");
+        assertEquals(25, jsonNode.get("inStock").asInt(), "InStock should be updated");
+        assertEquals(30, jsonNode.get("priceEclVat").asDouble(), "PriceEclVat should be updated");
+    }
+
+    @Test
     void getAllLpProducts() throws Exception {
         // Act:
         this.mockMvc.perform(get("/lpproducts"))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1))); // Expecting 1 product added in previous test
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(4))); // +1 als je boven de stappen uitvoert
     }
-
-
-
-    }
+}
 
 
 

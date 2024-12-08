@@ -4,6 +4,7 @@ import com.example.platenwinkel.enumeration.Genre;
 
 public class LpProductOutputDto {
     private Long id;
+
     public String artist;
     public String album;
     public String description;
@@ -13,11 +14,6 @@ public class LpProductOutputDto {
     public Double priceInclVat;
 
     public Double priceEclVat;
-
-
-
-
-
 
     public String getArtist() {
         return artist;
