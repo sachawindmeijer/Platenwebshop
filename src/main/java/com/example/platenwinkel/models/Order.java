@@ -134,7 +134,7 @@ public class Order {
 //    public int getPaymentStatus() {
 //        return paymentStatus;
 //    }
-// dit kan weg
+//z
 //    public void setPaymentStatus(int paymentStatus) {
 //        this.paymentStatus = paymentStatus;
 //    }
