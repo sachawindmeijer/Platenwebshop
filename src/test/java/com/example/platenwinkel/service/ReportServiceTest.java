@@ -290,12 +290,12 @@ class ReportServiceTest {
         // Create a report with no top or low-selling products
         List<LpProduct> emptyTopSellingProducts = Collections.emptyList();
         List<LpProduct> emptyLowSellingProducts = Collections.emptyList();
-        Double totalRevenue = 150.0; // Only revenue is present
+        Double totalRevenue = 150.0;
 
         Report report = new Report(emptyTopSellingProducts, emptyLowSellingProducts, totalRevenue);
         report.setId(reportId);
 
-        // Mock the repository to return this report
+
         when(reportRepository.findById(reportId)).thenReturn(Optional.of(report));
 
         // Act
