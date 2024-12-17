@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface LpProductRepository extends JpaRepository<LpProduct, Long> {
  List<LpProduct> findAllLpProductsByArtistEqualsIgnoreCase(String artist );
+
+ boolean existsByAlbumAndArtist(String album, String artist);
 }

@@ -4,20 +4,16 @@ import com.example.platenwinkel.enumeration.Genre;
 
 public class LpProductOutputDto {
     private Long id;
+
     public String artist;
     public String album;
     public String description;
     public Genre genre;
     public int inStock;
 
-    public double priceInclVat;
+    public Double priceInclVat;
 
-    public double priceEclVat;
-
-
-
-
-
+    public Double priceExclVat;
 
     public String getArtist() {
         return artist;
@@ -68,19 +64,19 @@ public class LpProductOutputDto {
         this.id = id;
     }
 
-    public double getPriceInclVat() {
+    public Double getPriceInclVat() {
         return priceInclVat;
     }
 
-    public void setPriceInclVat(double priceInclVat) {
+    public void setPriceInclVat(Double priceInclVat) {
         this.priceInclVat = priceInclVat;
     }
 
-    public double getPriceEclVat() {
-        return priceEclVat;
+    public Double getPriceExclVat() {
+        return priceExclVat;
     }
 
-    public void setPriceEclVat(double priceEclVat) {
-        this.priceEclVat = priceEclVat;
+    public void setPriceExclVat(Double priceExclVat) {
+        this.priceExclVat = priceExclVat;
     }
 }

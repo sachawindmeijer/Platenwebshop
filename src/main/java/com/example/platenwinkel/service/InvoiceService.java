@@ -4,6 +4,8 @@ import com.example.platenwinkel.dtos.input.InvoiceInputDto;
 import com.example.platenwinkel.dtos.mapper.InvoiceMapper;
 import com.example.platenwinkel.dtos.output.InvoiceOutputDto;
 
+import com.example.platenwinkel.exceptions.InvalidInputException;
+import com.example.platenwinkel.exceptions.RecordNotFoundException;
 import com.example.platenwinkel.models.Invoice;
 import com.example.platenwinkel.models.Order;
 
@@ -12,6 +14,7 @@ import com.example.platenwinkel.models.User;
 import com.example.platenwinkel.repositories.InvoiceRepository;
 import com.example.platenwinkel.repositories.OrderRepository;
 import com.example.platenwinkel.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,6 +22,8 @@ import java.util.List;
 
 
 import java.util.stream.Collectors;
+
+import static com.example.platenwinkel.models.Invoice.VAT_RATE;
 
 @Service
 public class InvoiceService {
@@ -42,21 +47,28 @@ public class InvoiceService {
 
     public InvoiceOutputDto getInvoiceById(Long id) {
         Invoice invoice = invoiceRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invoice not found"));
+                .orElseThrow(() -> new RecordNotFoundException("Invoice not found with ID " + id));
         return InvoiceMapper.fromInvoiceToOutputDto(invoice);
     }
 
     public InvoiceOutputDto createInvoice(InvoiceInputDto inputDto, String username, Long orderId) {
         User user = userRepository.findById(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RecordNotFoundException("User not found " + username));
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new RecordNotFoundException("Order not found " + orderId));
 
         if (invoiceRepository.existsByOrderId(orderId)) {
-            throw new RuntimeException("An invoice already exists for this order.");
+            throw new InvalidInputException("An invoice already exists for this order ID " + orderId);
         }
         Invoice invoice = InvoiceMapper.fromInputDtoToModel(inputDto, user, order);
+        invoice.setOrder(order);
         invoice.setDate(LocalDate.now());
+        double totalAmountExclVat = order.getItems().entrySet().stream()
+                .mapToDouble(entry -> entry.getKey().getPriceExclVat() * entry.getValue())
+                .sum();
+        double totalCost = totalAmountExclVat * (1 + VAT_RATE) + order.getShippingCost();
+        invoice.setTotalAmountExclVat(totalAmountExclVat);
+        invoice.setTotalCost(totalCost);
         Invoice savedInvoice = invoiceRepository.save(invoice);
 
         return InvoiceMapper.fromInvoiceToOutputDto(savedInvoice);
@@ -65,11 +77,12 @@ public class InvoiceService {
 
     public InvoiceOutputDto updateInvoice(Long id, InvoiceInputDto inputDto) {
         Invoice existingInvoice = invoiceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Invoice not found"));
+                .orElseThrow(() -> new RecordNotFoundException("Invoice not found with ID " + id));
+
         existingInvoice.setInvoiceNumber(inputDto.getInvoiceNumber());
-        existingInvoice.setVAT(inputDto.getVAT());
-        existingInvoice.setInvoiceDate(LocalDate.now()); // or use invoiceInputDto.getInvoiceDate() if available
-        existingInvoice.calculateAmounts(); // Recalculate amounts based on updated VAT or other fields
+        existingInvoice.setPaymentStatus(inputDto.getPaymentStatus());
+        existingInvoice.setDeliveryStatus(inputDto.getDeliveryStatus());
+        existingInvoice.setInvoiceDate(LocalDate.now());
 
         Invoice updatedInvoice = invoiceRepository.save(existingInvoice);
         return InvoiceMapper.fromInvoiceToOutputDto(updatedInvoice);
@@ -77,7 +90,7 @@ public class InvoiceService {
     }
     public void deleteInvoice(Long id) {
         if (!invoiceRepository.existsById(id)) {
-            throw new IllegalArgumentException("Invoice not found");
+            throw new RecordNotFoundException ("Invoice not found with ID " + id);
         }
         invoiceRepository.deleteById(id);
     }

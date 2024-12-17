@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ReportMapper {
 
-    public static Report fromInputDtoToMode(ReportInputDto inputDto, List<LpProduct> topSellingProducts, List<LpProduct> lowSellingProducts, double totalRevenue) {
+    public static Report fromInputDtoToMode(ReportInputDto inputDto, List<LpProduct> topSellingProducts, List<LpProduct> lowSellingProducts, Double totalRevenue) {
         Report report = new Report(
                 topSellingProducts,
                 lowSellingProducts,

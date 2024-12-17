@@ -1,6 +1,6 @@
 package com.example.platenwinkel.dtos.output;
 
-import com.example.platenwinkel.enumeration.DeliveryStatus;
+
 import com.example.platenwinkel.models.Order;
 
 import java.time.LocalDate;
@@ -13,24 +13,21 @@ public class OrderOutputDto {
     private String username;
     private LocalDate orderDate;
     private Double shippingCost;
-    private int paymentStatus;
-    private DeliveryStatus deliveryStatus;
     private String shippingAdress;
     private Map<Long, Integer> items;
-    private double totalCost;
+    private Double totalCost;
 
     public OrderOutputDto() {}
 
-    public OrderOutputDto(Long id, String username, LocalDate orderDate, Double shippingCost, int paymentStatus, DeliveryStatus deliveryStatus, String shippingAdress, Map<Long, Integer> items, double totalCost) {
+    public OrderOutputDto(Long id, String username, LocalDate orderDate, Double shippingCost, String shippingAdress, Map<Long, Integer> items) {
         this.id = id;
         this.username = username;
         this.orderDate = orderDate;
         this.shippingCost = shippingCost;
-        this.paymentStatus = paymentStatus;
-        this.deliveryStatus = deliveryStatus;
+
         this.shippingAdress = shippingAdress;
         this.items = items;
-        this.totalCost = totalCost;
+
     }
 
     public Long getId() {
@@ -65,21 +62,6 @@ public class OrderOutputDto {
         this.shippingCost = shippingCost;
     }
 
-    public int getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(int paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    public DeliveryStatus getDeliveryStatus() {
-        return deliveryStatus;
-    }
-
-    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
-    }
 
     public String getShippingAdress() {
         return shippingAdress;
@@ -93,7 +75,11 @@ public class OrderOutputDto {
         return items;
     }
 
-    public void setTotalCost(double totalCost) {
+    public Double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(Double totalCost) {
         this.totalCost = totalCost;
     }
 

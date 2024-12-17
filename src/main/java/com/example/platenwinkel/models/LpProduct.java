@@ -1,8 +1,10 @@
 package com.example.platenwinkel.models;
 
 import com.example.platenwinkel.enumeration.Genre;
+import com.example.platenwinkel.exceptions.InvalidInputException;
 import com.example.platenwinkel.helper.PriceCalculator;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -12,35 +14,39 @@ public class LpProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
+    @NotBlank
     private String artist;
+    @NotBlank
     private String album;
+    @Size(max = 500)
     private String description;
     private LocalDate releaseDate;
     @Enumerated(EnumType.STRING)
     private Genre genre;
+
+    @Min(value = 0)
     private int inStock;
 
 
+    private Double priceInclVat;
 
+    @NotNull
+    @Positive
+    private Double priceExclVat;
 
-    private double priceInclVat;
-    private double priceEclVat;
-
-    public LpProduct(Long id, String artist, String album, String description, Genre genre, int inStock, double priceEclVat) {
+    public LpProduct(Long id, String artist, String album, String description, Genre genre, int inStock, Double priceExclVat) {
         this.id = id;
         this.artist = artist;
         this.album = album;
         this.description = description;
         this.genre = genre;
         this.inStock = inStock;
-        this.priceEclVat = priceEclVat;
+        this.priceExclVat = priceExclVat;
     }
     public LpProduct() {
-
     }
-
 
     public void setId(Long id) {
         this.id = id;
@@ -79,25 +85,30 @@ public class LpProduct {
         this.inStock = inStock;
     }
 
-    public double getPriceInclVat() {
+    public Double getPriceInclVat() {
         return priceInclVat;
     }
 
-    public void setPriceInclVat(double priceInclVat) {
-        this.priceInclVat = PriceCalculator.calculatePriceInclVat(priceEclVat);
+    public void setPriceInclVat() {
+        if (this.priceExclVat != null) {
+            this.priceInclVat = PriceCalculator.calculatePriceInclVat(this.priceExclVat);
+        } else {
+            throw new IllegalStateException("Price excluding VAT is not set.");
+        }
     }
 
-    public double getPriceEclVat() {
-        return priceEclVat;
+    public Double getPriceExclVat() {
+        return priceExclVat;
     }
 
-    public void setPriceEclVat(double priceEclVat) {
-        this.priceEclVat = priceEclVat;
+    public void setPriceExclVat(Double priceExclVat) {
+        this.priceExclVat = priceExclVat;
     }
 
     public Long getId() {
         return id;
     }
+
     public LocalDate getReleaseDate() {
         return releaseDate;
     }

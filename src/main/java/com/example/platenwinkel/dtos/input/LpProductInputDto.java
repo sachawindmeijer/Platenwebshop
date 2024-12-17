@@ -1,29 +1,29 @@
 package com.example.platenwinkel.dtos.input;
 
 import com.example.platenwinkel.enumeration.Genre;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-
+import jakarta.validation.constraints.*;
 
 
 public class LpProductInputDto {
 
 
-    @NotBlank
-    public String artist;
-    public String album;
-    public String description;
-    public Genre genre;
-    public int inStock;
+        @NotBlank
+        public String artist;
 
-    public double  PriceInclVat;
+        @NotBlank
+        public String album;
 
+        @Size(max = 500)
+        public String description;
+        public Genre genre;
 
-    public double priceEclVat;//ook deze aanpassen
+        @Min(value = 0)
+        public int inStock;
 
+         @NotNull
+    @Positive
+        public Double priceExclVat;
 
-
-// public double sellPrice; dit niet in de input dto zetten anders kan de klant het zien
 
     public String getArtist() {
         return artist;
@@ -65,19 +65,12 @@ public class LpProductInputDto {
         this.inStock = inStock;
     }
 
-    public double getPriceInclVat() {
-        return PriceInclVat;
+
+    public Double getPriceExclVat() {
+        return priceExclVat;
     }
 
-    public void setPriceInclVat(double priceInclVat) {
-        PriceInclVat = priceInclVat;
-    }
-
-    public double getPriceEclVat() {
-        return priceEclVat;
-    }
-
-    public void setPriceEclVat(double priceEclVat) {
-        this.priceEclVat = priceEclVat;
+    public void setPriceExclVat(Double priceExclVat) {
+        this.priceExclVat = priceExclVat;
     }
 }

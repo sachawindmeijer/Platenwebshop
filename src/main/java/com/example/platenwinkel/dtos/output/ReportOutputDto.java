@@ -10,11 +10,11 @@ public class ReportOutputDto {
     private Long id;
     private List<LpProduct> topSellingProducts;
     private List<LpProduct> lowSellingProducts;
-    private double totalRevenue;
+    private Double totalRevenue;
     private LocalDate rapportDatum;
     private String comment;
 
-    public ReportOutputDto(List<LpProduct> topSellingProducts, List<LpProduct> lowSellingProducts, double totalRevenue) {
+    public ReportOutputDto(List<LpProduct> topSellingProducts, List<LpProduct> lowSellingProducts, Double totalRevenue) {
         this.topSellingProducts = topSellingProducts;
         this.lowSellingProducts = lowSellingProducts;
         this.totalRevenue = totalRevenue;
@@ -48,11 +48,11 @@ public class ReportOutputDto {
         this.lowSellingProducts = lowSellingProducts;
     }
 
-    public double getTotalRevenue() {
+    public Double getTotalRevenue() {
         return totalRevenue;
     }
 
-    public void setTotalRevenue(double totalRevenue) {
+    public void setTotalRevenue(Double totalRevenue) {
         this.totalRevenue = totalRevenue;
     }
 

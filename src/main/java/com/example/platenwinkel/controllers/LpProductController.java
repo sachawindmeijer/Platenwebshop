@@ -1,18 +1,17 @@
 package com.example.platenwinkel.controllers;
 
 import com.example.platenwinkel.dtos.input.LpProductInputDto;
+import com.example.platenwinkel.dtos.output.InvoiceOutputDto;
 import com.example.platenwinkel.dtos.output.LpProductOutputDto;
 import com.example.platenwinkel.exceptions.InvalidInputException;
-import com.example.platenwinkel.exceptions.RecordNotFoundException;
+
 import com.example.platenwinkel.helper.BindingResultHelper;
 import com.example.platenwinkel.helper.PriceCalculator;
+import com.example.platenwinkel.models.LpProduct;
 import com.example.platenwinkel.service.LpProductService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -35,8 +34,9 @@ public class LpProductController {
 
     @PostMapping
     public ResponseEntity<LpProductOutputDto> addLpProduct(@Valid @RequestBody LpProductInputDto lpProductInputDto, BindingResult bindingResult) {
-
+        System.out.println("Received priceExclVat: " + lpProductInputDto.getPriceExclVat());
         if (bindingResult.hasErrors()) {
+
             throw new InvalidInputException("Somthing went wrong, please check the following fields. " + BindingResultHelper.getErrorMessage(bindingResult));
         }
         LpProductOutputDto lpProduct = lpProductService.addLpProduct(lpProductInputDto);
@@ -49,16 +49,20 @@ public class LpProductController {
 
         return ResponseEntity.created(uri).body(lpProduct);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<LpProductOutputDto> updateLpProduct(@PathVariable Long id, @Valid @RequestBody LpProductInputDto lpProductInputDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new InvalidInputException("Something went wrong, please check the following fields: " + BindingResultHelper.getErrorMessage(bindingResult));
         }
-
         LpProductOutputDto updatedLpProduct = lpProductService.updateLpProduct(id, lpProductInputDto);
         return ResponseEntity.ok(updatedLpProduct);
     }
-
+    @GetMapping("/lpproducts/all")
+    public ResponseEntity<List<LpProductOutputDto>> getAllLpProducts() {
+        List<LpProductOutputDto> lpProducts = lpProductService.getAllLps();
+        return ResponseEntity.ok(lpProducts);
+    }
 
     @GetMapping
     public ResponseEntity<List<LpProductOutputDto>> getAllLps(@RequestParam(value = "artist", required = false) Optional<String> artist) {
@@ -76,14 +80,7 @@ public class LpProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteLpProduct(@PathVariable Long id) {
-        System.out.println("Received request to delete LP product with ID: " + id);
-        try {
-            lpProductService.deletelpproduct(id);
-            System.out.println("LP product deleted successfully");
-        } catch (Exception e) {
-            System.out.println("Error occurred: " + e.getMessage());
-            throw e;
-        }
+        lpProductService.deletelpproduct(id);
         return ResponseEntity.noContent().build();
     }
 

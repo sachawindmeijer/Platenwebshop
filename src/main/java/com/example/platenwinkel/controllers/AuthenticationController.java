@@ -5,6 +5,7 @@ import com.example.platenwinkel.payload.AuthenticationRequest;
 
 import com.example.platenwinkel.service.MyUserDetailService;
 import com.example.platenwinkel.untils.JwtUtil;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,21 +44,18 @@ public class AuthenticationController {
 
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody AuthenticationRequest authenticationRequest) throws Exception {
 
         String username = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();
 
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Incorrect username or password");
-        }
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         final String jwt = jwtUtl.generateToken(userDetails);
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
                 .body("Token successfully generated");
     }
-
 }

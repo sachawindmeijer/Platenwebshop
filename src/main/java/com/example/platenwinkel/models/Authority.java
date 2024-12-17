@@ -1,6 +1,7 @@
 package com.example.platenwinkel.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 
@@ -14,6 +15,7 @@ public class Authority implements Serializable {
     private String username;
 
     @Id
+    @NotBlank
     @Column(nullable = false)
     private String authority;
 

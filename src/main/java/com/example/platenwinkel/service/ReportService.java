@@ -5,6 +5,7 @@ import com.example.platenwinkel.dtos.mapper.OrderMapper;
 import com.example.platenwinkel.dtos.mapper.ReportMapper;
 import com.example.platenwinkel.dtos.output.OrderOutputDto;
 import com.example.platenwinkel.dtos.output.ReportOutputDto;
+import com.example.platenwinkel.exceptions.BadRequestException;
 import com.example.platenwinkel.exceptions.RecordNotFoundException;
 import com.example.platenwinkel.models.LpProduct;
 import com.example.platenwinkel.models.Order;
@@ -38,6 +39,10 @@ public class ReportService {
 
         List<Order> orders = orderRepository.findAll();
 
+        if (orders.isEmpty()) {
+            throw new RecordNotFoundException("No orders found to generate the report.");
+        }
+
         Map<LpProduct, Integer> productSales = orders.stream()
                 .flatMap(order -> order.getItems().entrySet().stream())
                 .collect(Collectors.toMap(
@@ -45,6 +50,10 @@ public class ReportService {
                         Map.Entry::getValue,
                         Integer::sum
                 ));
+
+        if (productSales.isEmpty()) {
+            throw new RecordNotFoundException("No products found in orders.");
+        }
 
         List<LpProduct> topSellingProducts = productSales.entrySet().stream()
                 .filter(entry -> entry.getValue() >= 10)
@@ -59,6 +68,10 @@ public class ReportService {
         double totalRevenue = orders.stream()
                 .mapToDouble(Order::getTotalOrderAmount)
                 .sum();
+
+        if (totalRevenue == 0) {
+            throw new BadRequestException("Cannot generate report, total revenue is zero.");
+        }
 
         Report report = ReportMapper.fromInputDtoToMode(reportInputDto, topSellingProducts, lowSellingProducts, totalRevenue);
 

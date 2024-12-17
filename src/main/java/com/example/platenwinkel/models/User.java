@@ -1,6 +1,11 @@
 package com.example.platenwinkel.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,13 +17,19 @@ public class User {
 
 
     @Id
+//            (message = "Username cannot be blank")
+    @NotBlank
+    @Size(min = 3, max = 50)
     @Column(nullable = false, unique = true)
     private String username;
 
+    @NotBlank
+    @Size(min = 8, message = "Het wachtwoord moet minstens 8 tekens lang zijn")
     @Column(nullable = false, length = 255)
     private String password;
 
-
+    @NotNull
+    @Valid
     @OneToMany(
             targetEntity = Authority.class,
             mappedBy = "username",
@@ -33,7 +44,9 @@ public class User {
 
     @Column
     private String apikey;
-
+    @Email
+    @NotBlank
+    @Size(max = 100)
     @Column
     private String email;
 

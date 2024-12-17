@@ -3,6 +3,8 @@ package com.example.platenwinkel.service;
 import com.example.platenwinkel.dtos.input.LpProductInputDto;
 import com.example.platenwinkel.dtos.mapper.LpProductMapper;
 import com.example.platenwinkel.dtos.output.LpProductOutputDto;
+import com.example.platenwinkel.exceptions.DuplicateRecordException;
+import com.example.platenwinkel.exceptions.InvalidInputException;
 import com.example.platenwinkel.exceptions.RecordNotFoundException;
 import com.example.platenwinkel.models.LpProduct;
 import com.example.platenwinkel.repositories.LpProductRepository;
@@ -12,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LpProductService {
-    private final LpProductRepository lpProductRepository;//depandancies
+    private final LpProductRepository lpProductRepository;
 
 
     public LpProductService(LpProductRepository lpProductRepository) {
@@ -23,70 +26,97 @@ public class LpProductService {
     }
 
     public List<LpProductOutputDto> getAllLps() {
-        List<LpProduct> lpProductlist = lpProductRepository.findAll();
-        List<LpProductOutputDto> lpDtoList = new ArrayList<>();
-
-        for (LpProduct lp : lpProductlist) {
-            LpProductOutputDto dto = LpProductMapper.fromModelToOutputDto(lp);
-            lpDtoList.add(dto);
-        }
-        return lpDtoList;
+        return lpProductRepository.findAll().stream()
+                .map(LpProductMapper::fromModelToOutputDto)
+                .collect(Collectors.toList());
     }
 
-    public List<LpProductOutputDto> getAllLpProductsByArtist(String artist) {
-        List<LpProduct> lpProductlist = lpProductRepository.findAllLpProductsByArtistEqualsIgnoreCase(artist);
-        List<LpProductOutputDto> lpDtoList = new ArrayList<>();
 
-        for (LpProduct lp : lpProductlist) {
-            LpProductOutputDto dto = LpProductMapper.fromModelToOutputDto(lp);
-            lpDtoList.add(dto);
+    public List<LpProductOutputDto> getAllLpProductsByArtist(String artist) {
+        // Validate the input
+        if (artist == null || artist.isBlank()) {
+            throw new InvalidInputException("Artist field cannot be empty.");
         }
-        return lpDtoList;
+
+        List<LpProduct> lpProductlist = lpProductRepository.findAllLpProductsByArtistEqualsIgnoreCase(artist);
+        return lpProductlist.stream()
+                .map(LpProductMapper::fromModelToOutputDto)
+                .collect(Collectors.toList());
     }
 
     public LpProductOutputDto getLpProductById(Long id) {
-        Optional<LpProduct> lpProductOptional = lpProductRepository.findById(id);
-        if (lpProductOptional.isPresent()) {
-            LpProduct lpProduct = lpProductOptional.get();
-            return LpProductMapper.fromModelToOutputDto(lpProduct);
-        } else {
-            throw new RecordNotFoundException("geen lpproduct gevonden");
-        }
+        LpProduct lpProduct = lpProductRepository.findById(id)
+      .orElseThrow(() -> new RecordNotFoundException("No LP product found with ID: " + id));
+        return LpProductMapper.fromModelToOutputDto(lpProduct);
     }
 
     public LpProductOutputDto addLpProduct(LpProductInputDto lpProductInputDto) {
+
+        validateLpProductInput(lpProductInputDto);
+
+        // Check for duplicate product
+        checkForDuplicateProduct(lpProductInputDto);
+
         LpProduct lpProduct = LpProductMapper.fromInputDtoToModel(lpProductInputDto);
         LpProduct savedProduct = lpProductRepository.save(lpProduct);
+
+        // Mapping naar output DTO
         return LpProductMapper.fromModelToOutputDto(savedProduct);
     }
+
+
+
+    private void validateLpProductInput(LpProductInputDto lpProductInputDto) {
+        // Check if artist is valid
+        if (lpProductInputDto.getArtist() == null || lpProductInputDto.getArtist().isBlank()) {
+            throw new InvalidInputException("Artist field cannot be empty.");
+        }
+
+        // Check if price is valid
+        if (lpProductInputDto.getPriceExclVat() == null || lpProductInputDto.getPriceExclVat() <= 0) {
+            throw new InvalidInputException("Price (excluding VAT) must be greater than 0.");
+        }
+
+        // Check if album is valid
+        if (lpProductInputDto.getAlbum() == null || lpProductInputDto.getAlbum().isBlank()) {
+            throw new InvalidInputException("Album field cannot be empty.");
+        }
+    }
+
+    private void checkForDuplicateProduct(LpProductInputDto lpProductInputDto) {
+        // Check if product with same album and artist already exists
+        boolean productExists = lpProductRepository.existsByAlbumAndArtist(
+                lpProductInputDto.getAlbum(), lpProductInputDto.getArtist());
+
+        if (productExists) {
+            throw new DuplicateRecordException("An LP product with the same album and artist already exists.");
+        }
+    }
+
     public LpProductOutputDto updateLpProduct(Long id, LpProductInputDto lpProductInputDto) {
 
-        Optional<LpProduct> lpProductOptional = lpProductRepository.findById(id);
+        validateLpProductInput(lpProductInputDto);
 
-
-        if (lpProductOptional.isPresent()) {
-            LpProduct existingLpProduct = lpProductOptional.get();
+        LpProduct existingLpProduct = lpProductRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("No LP product found with ID: " + id));
 
             existingLpProduct.setArtist(lpProductInputDto.getArtist());
             existingLpProduct.setAlbum(lpProductInputDto.getAlbum());
             existingLpProduct.setDescription(lpProductInputDto.getDescription());
             existingLpProduct.setGenre(lpProductInputDto.getGenre());
             existingLpProduct.setInStock(lpProductInputDto.getInStock());
-            existingLpProduct.setPriceInclVat(lpProductInputDto.getPriceInclVat());
-            existingLpProduct.setPriceEclVat(lpProductInputDto.getPriceEclVat());
+            existingLpProduct.setPriceInclVat();
+            existingLpProduct.setPriceExclVat(lpProductInputDto.getPriceExclVat());
 
-            LpProduct updatedProduct = lpProductRepository.save(existingLpProduct);
-
-
-            return LpProductMapper.fromModelToOutputDto(updatedProduct);
-        } else {
-
-            throw new RecordNotFoundException("Geen LP product gevonden met ID: " + id);
+        LpProduct updatedProduct = lpProductRepository.save(existingLpProduct);
+        return LpProductMapper.fromModelToOutputDto(updatedProduct);
         }
-    }
+
 
     public void deletelpproduct(@RequestBody Long id) {
-
+        if (!lpProductRepository.existsById(id)) {
+            throw new RecordNotFoundException("No LP product found with ID: " + id);
+        }
         lpProductRepository.deleteById(id);
     }
 }

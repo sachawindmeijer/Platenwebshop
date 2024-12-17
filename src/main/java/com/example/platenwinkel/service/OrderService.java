@@ -14,7 +14,9 @@ import com.example.platenwinkel.repositories.OrderRepository;
 import com.example.platenwinkel.repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,14 +45,12 @@ public class OrderService {
     }
 
     public OrderOutputDto getOrderById(Long id) {
-        Optional<Order> orderOptional = orderRepository.findById(id);
-        if (orderOptional.isPresent()) {
-            Order order = orderOptional.get();
-            return OrderMapper.fromOrderToOutputDto(order);
-        } else {
-            throw new RecordNotFoundException("geen lpproduct gevonden");
-        }
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Order not found with ID: " + id));
+
+        return OrderMapper.fromOrderToOutputDto(order);
     }
+
 
     public OrderOutputDto createOrder(OrderInputDto orderInputDto, String username) {
         User user = userRepository.findById(username)
@@ -65,10 +65,8 @@ public class OrderService {
 
         Order order = OrderMapper.fromInputDToOrder(orderInputDto, user, productMap);
 
-
         Order savedOrder = orderRepository.save(order);
-
-
+        order.setOrderDate(LocalDate.now());
         return OrderMapper.fromOrderToOutputDto(savedOrder);
     }
 
@@ -78,9 +76,9 @@ public class OrderService {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Order not found with ID: " + id));
 
-        existingOrder.setOrderDate(orderInputDto.getOrderDate());
-        existingOrder.setPaymentStatus(orderInputDto.getPaymentStatus());
-        existingOrder.setDeliveryStatus(orderInputDto.getDeliveryStatus());
+
+//        existingOrder.setPaymentStatus(orderInputDto.getPaymentStatus());
+//        existingOrder.setDeliveryStatus(orderInputDto.getDeliveryStatus());
         existingOrder.setShippingAdress(orderInputDto.getShippingAdress());
 
         Map<Long, Integer> itemsDto = orderInputDto.getItems();
@@ -94,12 +92,16 @@ public class OrderService {
 
         existingOrder.calculateAndSetShippingCost();
 
+
         Order updatedOrder = orderRepository.save(existingOrder);
 
         return OrderMapper.fromOrderToOutputDto(updatedOrder);
     }
 
-    public void deleteOrder(Long id) {
+    public void deleteOrder(@RequestBody Long id) {
+        if (!orderRepository.existsById(id)) {
+            throw new RecordNotFoundException("No order found with ID: " + id);
+        }
         orderRepository.deleteById(id);
     }
 }

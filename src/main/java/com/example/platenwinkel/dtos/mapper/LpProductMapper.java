@@ -14,8 +14,9 @@ public class LpProductMapper {
         lp.setDescription(lpProductInputDto.getDescription());
         lp.setGenre(lpProductInputDto.getGenre());
         lp.setInStock(lpProductInputDto.getInStock());
-        lp.setPriceInclVat(lpProductInputDto.getPriceInclVat());
-        lp.setPriceEclVat(lpProductInputDto.getPriceEclVat());
+
+        lp.setPriceExclVat(lpProductInputDto.getPriceExclVat());
+        lp.setPriceInclVat();
 
         return lp;
     }
@@ -23,13 +24,15 @@ public class LpProductMapper {
 
     public static LpProductOutputDto fromModelToOutputDto(LpProduct lpProduct) {
         LpProductOutputDto lpProductOutputDto = new LpProductOutputDto();
+        lpProductOutputDto.setId(lpProduct.getId());
         lpProductOutputDto.setArtist(lpProduct.getArtist());
         lpProductOutputDto.setAlbum(lpProduct.getAlbum());
         lpProductOutputDto.setDescription(lpProduct.getDescription());
         lpProductOutputDto.setGenre(lpProduct.getGenre());
         lpProductOutputDto.setInStock(lpProduct.getInStock());
+
         lpProductOutputDto.setPriceInclVat(lpProduct.getPriceInclVat());
-        lpProductOutputDto.setPriceEclVat(lpProduct.getPriceEclVat());
+        lpProductOutputDto.setPriceExclVat(lpProduct.getPriceExclVat());
 
 
         return lpProductOutputDto;

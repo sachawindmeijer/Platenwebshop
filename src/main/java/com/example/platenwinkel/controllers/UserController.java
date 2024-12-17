@@ -4,13 +4,17 @@ package com.example.platenwinkel.controllers;
 import com.example.platenwinkel.dtos.input.AuthorityInputDto;
 import com.example.platenwinkel.dtos.input.UserInputDto;
 import com.example.platenwinkel.dtos.output.UserOutputDto;
+import com.example.platenwinkel.exceptions.InvalidInputException;
 import com.example.platenwinkel.exceptions.UserNotFoundException;
+import com.example.platenwinkel.helper.BindingResultHelper;
 import com.example.platenwinkel.models.Authority;
 import com.example.platenwinkel.service.UserService;
 //import org.apache.coyote.BadRequestException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 //import org.example.platenwinkel.exceptions.BadRequestException;
@@ -20,6 +24,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -42,22 +48,25 @@ public class UserController {
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<UserOutputDto> getUser(@PathVariable("username") String username) {
-        UserOutputDto optionalUser = userService.getUser(username);
-        if (optionalUser == null) {
-            throw new UserNotFoundException("User with username " + username + " not found");
-        }
-        return ResponseEntity.ok().body(optionalUser);
+    public ResponseEntity<UserOutputDto> getUser(@PathVariable String username) {
+        UserOutputDto user = userService.getUser(username);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping(value = "/{username}/authorities")
+    public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
+        Set<Authority> authorities = userService.getAuthorities(username);
+        return ResponseEntity.ok(authorities);
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<String> createKlant(@RequestBody UserInputDto dto) {;
-        if (dto.getUsername() == null || dto.getUsername().isEmpty() ||
-                dto.getPassword() == null || dto.getPassword().isEmpty()) {
-            throw new BadRequestException("Username and password are required and cannot be empty");
+    public ResponseEntity<String> createKlant(@Valid @RequestBody UserInputDto dto, BindingResult bindingResult) {;
+        if (bindingResult.hasErrors()) {
+            throw new InvalidInputException("Somthing went wrong, please check the following fields. " + BindingResultHelper.getErrorMessage(bindingResult));
         }
 
         String newUsername = userService.createUser(dto);
+
         if (dto.getAuthorities() != null && !dto.getAuthorities().isEmpty()) {
             for (Authority authority : dto.getAuthorities()) {
                 userService.addAuthority(newUsername, authority.getAuthority());
@@ -72,49 +81,22 @@ public class UserController {
     }
 
     @PutMapping(value = "/{username}")
-    public ResponseEntity<UserOutputDto> updateKlant(@PathVariable("username") String username, @RequestBody UserOutputDto dto) {
-        if (dto == null) {
-            throw new BadRequestException("User data for update cannot be null");
-        }
-        userService.updateUser(username, dto);
+    public ResponseEntity<Void> updateUser(
+            @PathVariable("username") String username,
+            @Valid @RequestBody UserInputDto dto) {
 
-        return ResponseEntity.noContent().build();
+
+        // Update de gebruiker via de service
+        userService.updateUser(username, dto);
+        return ResponseEntity.noContent().build(); // 204 No Content bij succesvolle update
     }
+
 
     @DeleteMapping(value = "/{username}")
     public ResponseEntity<Object> deleteKlant(@PathVariable("username") String username) {
-        if (!userService.userExists(username)) {
-            throw new UserNotFoundException("User with username " + username + " does not exist");
-        }
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
-        if (!userService.userExists(username)) {
-            throw new UserNotFoundException("User with username " + username + " not found");
-        }
-        return ResponseEntity.ok().body(userService.getAuthorities(username));
-    }
-
-    @PostMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody AuthorityInputDto fields) {
-        try {
-            userService.addAuthority(username, fields.authorityName);
-            return ResponseEntity.noContent().build();
-        } catch (Exception ex) {
-            throw new BadRequestException("Authority name is required");
-        }
-    }
-
-    @DeleteMapping(value = "/{username}/authorities/{authority}")
-    public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
-        if (!userService.userExists(username)) {
-            throw new UserNotFoundException("User with username " + username + " not found");
-        }
-        userService.removeAuthority(username, authority);
-        return ResponseEntity.noContent().build();
-    }
 }
 

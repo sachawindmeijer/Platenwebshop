@@ -2,6 +2,7 @@ package com.example.platenwinkel.service;
 
 import com.example.platenwinkel.dtos.input.UserInputDto;
 import com.example.platenwinkel.dtos.output.UserOutputDto;
+import com.example.platenwinkel.exceptions.InvalidInputException;
 import com.example.platenwinkel.exceptions.RecordNotFoundException;
 import com.example.platenwinkel.models.Authority;
 
@@ -10,6 +11,7 @@ import com.example.platenwinkel.repositories.UserRepository;
 
 import com.example.platenwinkel.untils.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,11 +25,12 @@ import java.util.Set;
 public class UserService {
     private final UserRepository userRepository;
 
-    @Autowired
+    //    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -41,19 +44,11 @@ public class UserService {
     }
 
     public UserOutputDto getUser(String username) {
-        UserOutputDto dto = new UserOutputDto();
-        Optional<User> user = userRepository.findById(username);
-        if (user.isPresent()){
-            dto = fromUser(user.get());
-        }else {
-            throw new UsernameNotFoundException(username);
-        }
-        return dto;
+        return userRepository.findById(username)
+                .map(UserService::fromUser)
+                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
     }
 
-    public boolean userExists(String username) {
-        return userRepository.existsById(username);
-    }
 
     public String createUser(UserInputDto userDto) {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
@@ -66,15 +61,35 @@ public class UserService {
         return newUser.getUsername();
     }
 
-    public void deleteUser(String username) {
-        userRepository.deleteById(username);
+
+    public void updateUser(String username, UserInputDto newUser) {
+        // Valideer inputvelden
+        validateUserInput(newUser);
+
+        // Zoek de gebruiker in de database
+        User user = userRepository.findById(username)
+                .orElseThrow(() -> new RecordNotFoundException("User not found: " + username));
+
+        // Werk de gegevens van de gebruiker bij
+        updateUserData(user, newUser);
+
+        // Sla de bijgewerkte gebruiker op in de database
+        userRepository.save(user);
     }
 
-    public void updateUser(String username, UserOutputDto newUser) {
-        if (!userRepository.existsById(username)) throw new RecordNotFoundException("User not found: " + username);
-        User user = userRepository.findById(username).get();
+    private void validateUserInput(UserInputDto newUser) {
+        if (newUser.getPassword() == null || newUser.getPassword().isEmpty()) {
+            throw new InvalidInputException("Invalid input: password cannot be null or empty");
+        }
+        if (newUser.getPassword().length() < 8) {
+            throw new InvalidInputException("Invalid input: password must be at least 8 characters long");
+        }
+    }
+
+    private void updateUserData(User user, UserInputDto newUser) {
         user.setPassword(newUser.getPassword());
-        userRepository.save(user);
+        user.setEmail(newUser.getEmail());
+        user.setEnabled(newUser.enabled != null && newUser.enabled); // Handleer mogelijke null-waarde
     }
 
     public Set<Authority> getAuthorities(String username) {
@@ -86,21 +101,21 @@ public class UserService {
 
     public void addAuthority(String username, String authority) {
 
-        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-        User user = userRepository.findById(username).get();
+        User user = userRepository.findById(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+
         user.addAuthority(new Authority(username, authority));
         userRepository.save(user);
     }
 
-    public void removeAuthority(String username, String authority) {
-        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-        User user = userRepository.findById(username).get();
-        Authority authorityToRemove = user.getAuthorities().stream().filter((a) -> a.getAuthority().equalsIgnoreCase(authority)).findAny().get();
-        user.removeAuthority(authorityToRemove);
-        userRepository.save(user);
+    public void deleteUser(String username) {
+        if (!userRepository.existsById(username)) {
+            throw new RecordNotFoundException("User with username " + username + " not found");
+        }
+        userRepository.deleteById(username);
     }
 
-    public static UserOutputDto fromUser(User user){
+    public static UserOutputDto fromUser(User user) {
 
         var dto = new UserOutputDto();
 

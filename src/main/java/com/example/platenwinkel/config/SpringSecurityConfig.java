@@ -53,19 +53,21 @@ public class SpringSecurityConfig {
                                 .requestMatchers("/public/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/lpproducts").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/lpproducts/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/users").permitAll()
+
 
 //
-                                .requestMatchers(HttpMethod.POST, "/orders").hasRole("USER")
-
                                 .requestMatchers(HttpMethod.GET, "/authenticated").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/orders").hasRole("USER")
                                 .requestMatchers(HttpMethod.GET, "/orders/**").hasAnyRole("ADMIN","USER")
                                 .requestMatchers(HttpMethod.GET, "/invoices").hasAnyRole("ADMIN", "USER")
                                 .requestMatchers(HttpMethod.GET, "/invoices/**").hasAnyRole("ADMIN", "USER")
-//
+//.requestMatchers(HttpMethod.POST, "/users").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/users/{username}/authorities").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/lpproducts").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/lpproducts/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/lpproducts/**").hasRole("ADMIN")
