@@ -13,7 +13,7 @@ public class InvoiceInputDto {
 
     @Min(value = 0)
     @Max(value = 1)
-    public int paymentStatus;// 0 = not paid, 1 = paid
+    public int paymentStatus;
     @NotNull
     public DeliveryStatus deliveryStatus;
 

@@ -85,10 +85,8 @@ public class UserController {
             @PathVariable("username") String username,
             @Valid @RequestBody UserInputDto dto) {
 
-
-        // Update de gebruiker via de service
         userService.updateUser(username, dto);
-        return ResponseEntity.noContent().build(); // 204 No Content bij succesvolle update
+        return ResponseEntity.noContent().build();
     }
 
 

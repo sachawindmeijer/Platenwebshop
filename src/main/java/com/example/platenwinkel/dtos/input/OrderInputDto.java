@@ -23,7 +23,7 @@ public class OrderInputDto {
 
     @NotEmpty
     @Size(min = 1)
-    public Map<Long, Integer> items; // Mapping product ID's to quantities
+    public Map<Long, Integer> items;
 
     public String getUsername() {
         return username;

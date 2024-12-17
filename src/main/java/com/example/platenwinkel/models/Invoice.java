@@ -43,8 +43,6 @@ public class Invoice {
 
     public static final double VAT_RATE = 0.21;
 
-
-    // Default constructor
     public Invoice() {
     }
 

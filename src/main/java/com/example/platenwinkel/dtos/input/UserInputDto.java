@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 import java.util.Set;
 
 public class UserInputDto {
-//    (message = "Username cannot be blank")
+
     @NotBlank
     @Size(min = 3, max = 50)
     public String username;
