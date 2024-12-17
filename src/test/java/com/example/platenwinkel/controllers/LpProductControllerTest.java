@@ -45,7 +45,7 @@ class LpProductControllerTest {
                 "description": "Classic album from 1969",
                 "genre": "ROCK",
                 "inStock": 10,
-                "priceEclVat": 16.80
+                "priceExclVat": 16.80
                 }""";
 
         //act
@@ -71,7 +71,7 @@ class LpProductControllerTest {
         assertEquals("Classic album from 1969", jsonNode.get("description").asText(), "Description should match");
         assertEquals("ROCK", jsonNode.get("genre").asText(), "Genre should match");
         assertEquals(10, jsonNode.get("inStock").asInt(), "InStock should match");
-        assertEquals(16.80, jsonNode.get("priceEclVat").asDouble(), "PriceEclVat should match");
+        assertEquals(16.80, jsonNode.get("priceExclVat").asDouble(), "PriceEclVat should match");
 
         assertNotNull(createdId, "ID should not be null");
 
@@ -88,7 +88,7 @@ class LpProductControllerTest {
                 "description": "Electropop album by a icon",
                 "genre": "ROCK",
                 "inStock": 25,
-                "priceEclVat": 30.00
+                "priceExclVat": 30.00
                 }""";
 
         // Act
@@ -109,7 +109,7 @@ class LpProductControllerTest {
         assertEquals("Electropop album by a icon", jsonNode.get("description").asText(), "Description should be updated");
         assertEquals("ROCK", jsonNode.get("genre").asText(), "Genre should be updated");
         assertEquals(25, jsonNode.get("inStock").asInt(), "InStock should be updated");
-        assertEquals(30, jsonNode.get("priceEclVat").asDouble(), "PriceEclVat should be updated");
+        assertEquals(30, jsonNode.get("priceExclVat").asDouble(), "PriceEclVat should be updated");
     }
 
     @Test

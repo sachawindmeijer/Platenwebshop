@@ -64,7 +64,7 @@ public class InvoiceService {
         invoice.setOrder(order);
         invoice.setDate(LocalDate.now());
         double totalAmountExclVat = order.getItems().entrySet().stream()
-                .mapToDouble(entry -> entry.getKey().getPriceEclVat() * entry.getValue())
+                .mapToDouble(entry -> entry.getKey().getPriceExclVat() * entry.getValue())
                 .sum();
         double totalCost = totalAmountExclVat * (1 + VAT_RATE) + order.getShippingCost();
         invoice.setTotalAmountExclVat(totalAmountExclVat);

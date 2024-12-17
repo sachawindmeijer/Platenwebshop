@@ -45,7 +45,7 @@ class LpProductServiceTest {
         lpProductInputDto.setDescription("Classic album from 1969");
         lpProductInputDto.setGenre(Genre.ROCK); // Assuming Genre is an enum
         lpProductInputDto.setInStock(10);
-        lpProductInputDto.setPriceEclVat(16.80);
+        lpProductInputDto.setPriceExclVat(16.80);
 
         Mockito.when(lpProductRepository.save(Mockito.any())).thenReturn(LpProductMapper.fromInputDtoToModel(lpProductInputDto));
 
@@ -61,7 +61,7 @@ class LpProductServiceTest {
         assertEquals(Genre.ROCK, result.getGenre());
         assertEquals(10, result.getInStock());
 
-        assertEquals(16.80, result.getPriceEclVat(), 0.01);
+        assertEquals(16.80, result.getPriceExclVat(), 0.01);
     }
     @Test
     @DisplayName("should throw DuplicateRecordException when adding a duplicate LP product")
@@ -73,7 +73,7 @@ class LpProductServiceTest {
         lpProductInputDto.setDescription("Classic album from 1969");
         lpProductInputDto.setGenre(Genre.ROCK);
         lpProductInputDto.setInStock(10);
-        lpProductInputDto.setPriceEclVat(16.80);
+        lpProductInputDto.setPriceExclVat(16.80);
 
         // Mock that a product with the same artist and album already exists
         Mockito.when(lpProductRepository.existsByAlbumAndArtist("Abbey Road", "The Beatles")).thenReturn(true);
@@ -93,7 +93,7 @@ class LpProductServiceTest {
         // Arrange
         LpProductInputDto invalidDto = new LpProductInputDto();
         invalidDto.setArtist(""); // Invalid artist
-        invalidDto.setPriceEclVat(-10.0); // Invalid price
+        invalidDto.setPriceExclVat(-10.0); // Invalid price
 
         // Act & Assert
         assertThrows(InvalidInputException.class, () -> lpProductService.addLpProduct(invalidDto));
@@ -111,7 +111,7 @@ class LpProductServiceTest {
         updateDto.setDescription("Updated description");
         updateDto.setGenre(Genre.ROCK);
         updateDto.setInStock(20);
-        updateDto.setPriceEclVat(18.00);
+        updateDto.setPriceExclVat(18.00);
 
         Mockito.when(lpProductRepository.findById(id)).thenReturn(Optional.of(existingProduct));
         Mockito.when(lpProductRepository.save(Mockito.any(LpProduct.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -125,7 +125,7 @@ class LpProductServiceTest {
         assertEquals("Revised Abbey Road", result.getAlbum());
         assertEquals("Updated description", result.getDescription());
         assertEquals(20, result.getInStock());
-        assertEquals(18.00, result.getPriceEclVat(), 0.01);
+        assertEquals(18.00, result.getPriceExclVat(), 0.01);
     }
 
     @Test
@@ -134,6 +134,10 @@ class LpProductServiceTest {
         // Arrange
         Long id = 99L;
         LpProductInputDto inputDto = new LpProductInputDto();
+        inputDto.setArtist("Artist Name");  // Initialize fields properly
+        inputDto.setAlbum("Album Name");
+        inputDto.setPriceExclVat(10.0);
+        inputDto.setInStock(10);
         Mockito.when(lpProductRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -147,7 +151,7 @@ class LpProductServiceTest {
         Long id = 1L;
         LpProductInputDto invalidDto = new LpProductInputDto();
         invalidDto.setArtist(""); // Invalid artist
-        invalidDto.setPriceEclVat(-10.0); // Invalid price
+        invalidDto.setPriceExclVat(-10.0); // Invalid price
 
         // Lenient stub for findById() in case it's needed for other test cases
         Mockito.lenient().when(lpProductRepository.findById(id)).thenReturn(Optional.of(new LpProduct()));

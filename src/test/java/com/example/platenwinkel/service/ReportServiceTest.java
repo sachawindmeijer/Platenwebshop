@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
@@ -128,8 +129,8 @@ class ReportServiceTest {
     @DisplayName("should throw exception when ReportInputDto is empty")
     void createReport_EmptyInputDto() {
         // Arrange
-        ReportInputDto emptyInputDto = new ReportInputDto(); // No comment or other fields set
-        when(orderRepository.findAll()).thenReturn(Collections.emptyList()); // No orders to process
+        ReportInputDto emptyInputDto = new ReportInputDto();
+        when(orderRepository.findAll()).thenReturn(Collections.emptyList());
 
         // Act & Assert
         Exception exception = assertThrows(RecordNotFoundException.class, () -> {
@@ -337,19 +338,19 @@ class ReportServiceTest {
         verify(reportRepository, times(1)).deleteById(id);
     }
     @Test
-    @DisplayName("should throw exception when deleting a report that does not exist")
+    @DisplayName("should throw exception when deleting non-existing report")
     void deleteReport_NotFound() {
         // Arrange
         Long id = 99L;
-        when(reportRepository.existsById(id)).thenReturn(false);
+        Mockito.when(reportRepository.existsById(id)).thenReturn(false);
 
         // Act & Assert
-        Exception exception = assertThrows(RecordNotFoundException.class, () -> {
-            reportService.deleteReport(id);
-        });
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class,
+                () -> reportService.deleteReport(id));
 
+        // Assert the exception message
         assertEquals("Report not found with id: " + id, exception.getMessage());
     }
-}
+ }
 
 

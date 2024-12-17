@@ -34,7 +34,7 @@ public class LpProductController {
 
     @PostMapping
     public ResponseEntity<LpProductOutputDto> addLpProduct(@Valid @RequestBody LpProductInputDto lpProductInputDto, BindingResult bindingResult) {
-
+        System.out.println("Received priceExclVat: " + lpProductInputDto.getPriceExclVat());
         if (bindingResult.hasErrors()) {
 
             throw new InvalidInputException("Somthing went wrong, please check the following fields. " + BindingResultHelper.getErrorMessage(bindingResult));
@@ -58,11 +58,12 @@ public class LpProductController {
         LpProductOutputDto updatedLpProduct = lpProductService.updateLpProduct(id, lpProductInputDto);
         return ResponseEntity.ok(updatedLpProduct);
     }
-    @GetMapping
+    @GetMapping("/lpproducts/all")
     public ResponseEntity<List<LpProductOutputDto>> getAllLpProducts() {
         List<LpProductOutputDto> lpProducts = lpProductService.getAllLps();
         return ResponseEntity.ok(lpProducts);
     }
+
     @GetMapping
     public ResponseEntity<List<LpProductOutputDto>> getAllLps(@RequestParam(value = "artist", required = false) Optional<String> artist) {
         List<LpProductOutputDto> dtos = artist.isEmpty() ? lpProductService.getAllLps() : lpProductService.getAllLpProductsByArtist(artist.get());

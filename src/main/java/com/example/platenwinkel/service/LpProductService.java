@@ -73,7 +73,7 @@ public class LpProductService {
         }
 
         // Check if price is valid
-        if (lpProductInputDto.getPriceEclVat() == null || lpProductInputDto.getPriceEclVat() <= 0) {
+        if (lpProductInputDto.getPriceExclVat() == null || lpProductInputDto.getPriceExclVat() <= 0) {
             throw new InvalidInputException("Price (excluding VAT) must be greater than 0.");
         }
 
@@ -106,7 +106,7 @@ public class LpProductService {
             existingLpProduct.setGenre(lpProductInputDto.getGenre());
             existingLpProduct.setInStock(lpProductInputDto.getInStock());
             existingLpProduct.setPriceInclVat();
-            existingLpProduct.setPriceEclVat(lpProductInputDto.getPriceEclVat());
+            existingLpProduct.setPriceExclVat(lpProductInputDto.getPriceExclVat());
 
         LpProduct updatedProduct = lpProductRepository.save(existingLpProduct);
         return LpProductMapper.fromModelToOutputDto(updatedProduct);

@@ -13,7 +13,7 @@ public class LpProductOutputDto {
 
     public Double priceInclVat;
 
-    public Double priceEclVat;
+    public Double priceExclVat;
 
     public String getArtist() {
         return artist;
@@ -72,11 +72,11 @@ public class LpProductOutputDto {
         this.priceInclVat = priceInclVat;
     }
 
-    public Double getPriceEclVat() {
-        return priceEclVat;
+    public Double getPriceExclVat() {
+        return priceExclVat;
     }
 
-    public void setPriceEclVat(Double priceEclVat) {
-        this.priceEclVat = priceEclVat;
+    public void setPriceExclVat(Double priceExclVat) {
+        this.priceExclVat = priceExclVat;
     }
 }
