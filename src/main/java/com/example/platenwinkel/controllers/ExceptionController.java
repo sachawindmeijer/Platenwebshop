@@ -75,7 +75,7 @@ public class ExceptionController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception exception) {
-        exception.printStackTrace(); // Consider logging instead of printing in production
+        exception.printStackTrace();
         return buildErrorResponse("Internal Server Error", "An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @ExceptionHandler(DuplicateRecordException.class)

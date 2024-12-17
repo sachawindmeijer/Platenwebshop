@@ -150,10 +150,10 @@ class LpProductServiceTest {
         // Arrange
         Long id = 1L;
         LpProductInputDto invalidDto = new LpProductInputDto();
-        invalidDto.setArtist(""); // Invalid artist
-        invalidDto.setPriceExclVat(-10.0); // Invalid price
+        invalidDto.setArtist("");
+        invalidDto.setPriceExclVat(-10.0);
 
-        // Lenient stub for findById() in case it's needed for other test cases
+
         Mockito.lenient().when(lpProductRepository.findById(id)).thenReturn(Optional.of(new LpProduct()));
 
         // Act & Assert

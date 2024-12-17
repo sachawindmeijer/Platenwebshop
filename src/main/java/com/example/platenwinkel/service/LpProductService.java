@@ -33,7 +33,7 @@ public class LpProductService {
 
 
     public List<LpProductOutputDto> getAllLpProductsByArtist(String artist) {
-        // Validate the input
+
         if (artist == null || artist.isBlank()) {
             throw new InvalidInputException("Artist field cannot be empty.");
         }
@@ -54,37 +54,33 @@ public class LpProductService {
 
         validateLpProductInput(lpProductInputDto);
 
-        // Check for duplicate product
         checkForDuplicateProduct(lpProductInputDto);
 
         LpProduct lpProduct = LpProductMapper.fromInputDtoToModel(lpProductInputDto);
         LpProduct savedProduct = lpProductRepository.save(lpProduct);
 
-        // Mapping naar output DTO
         return LpProductMapper.fromModelToOutputDto(savedProduct);
     }
 
-
-
     private void validateLpProductInput(LpProductInputDto lpProductInputDto) {
-        // Check if artist is valid
+
         if (lpProductInputDto.getArtist() == null || lpProductInputDto.getArtist().isBlank()) {
             throw new InvalidInputException("Artist field cannot be empty.");
         }
 
-        // Check if price is valid
+
         if (lpProductInputDto.getPriceExclVat() == null || lpProductInputDto.getPriceExclVat() <= 0) {
             throw new InvalidInputException("Price (excluding VAT) must be greater than 0.");
         }
 
-        // Check if album is valid
+
         if (lpProductInputDto.getAlbum() == null || lpProductInputDto.getAlbum().isBlank()) {
             throw new InvalidInputException("Album field cannot be empty.");
         }
     }
 
     private void checkForDuplicateProduct(LpProductInputDto lpProductInputDto) {
-        // Check if product with same album and artist already exists
+
         boolean productExists = lpProductRepository.existsByAlbumAndArtist(
                 lpProductInputDto.getAlbum(), lpProductInputDto.getArtist());
 
@@ -111,7 +107,6 @@ public class LpProductService {
         LpProduct updatedProduct = lpProductRepository.save(existingLpProduct);
         return LpProductMapper.fromModelToOutputDto(updatedProduct);
         }
-
 
     public void deletelpproduct(@RequestBody Long id) {
         if (!lpProductRepository.existsById(id)) {
