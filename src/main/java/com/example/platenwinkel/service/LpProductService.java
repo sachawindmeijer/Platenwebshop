@@ -62,8 +62,6 @@ public class LpProductService {
         return LpProductMapper.fromModelToOutputDto(savedProduct);
     }
 
-
-
     private void validateLpProductInput(LpProductInputDto lpProductInputDto) {
 
         if (lpProductInputDto.getArtist() == null || lpProductInputDto.getArtist().isBlank()) {
@@ -109,7 +107,6 @@ public class LpProductService {
         LpProduct updatedProduct = lpProductRepository.save(existingLpProduct);
         return LpProductMapper.fromModelToOutputDto(updatedProduct);
         }
-
 
     public void deletelpproduct(@RequestBody Long id) {
         if (!lpProductRepository.existsById(id)) {
