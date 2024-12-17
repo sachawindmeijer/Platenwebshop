@@ -25,24 +25,25 @@ public class LpProduct {
     private LocalDate releaseDate;
     @Enumerated(EnumType.STRING)
     private Genre genre;
-    @NotNull
+
     @Min(value = 0)
     private int inStock;
 
 
     private Double priceInclVat;
 
+    @NotNull
     @Positive
-    private Double priceEclVat;
+    private Double priceExclVat;
 
-    public LpProduct(Long id, String artist, String album, String description, Genre genre, int inStock, Double priceEclVat) {
+    public LpProduct(Long id, String artist, String album, String description, Genre genre, int inStock, Double priceExclVat) {
         this.id = id;
         this.artist = artist;
         this.album = album;
         this.description = description;
         this.genre = genre;
         this.inStock = inStock;
-        this.priceEclVat = priceEclVat;
+        this.priceExclVat = priceExclVat;
     }
     public LpProduct() {
     }
@@ -89,20 +90,19 @@ public class LpProduct {
     }
 
     public void setPriceInclVat() {
-        if (this.priceEclVat != null && this.priceEclVat > 0) {
-            this.priceInclVat = PriceCalculator.calculatePriceInclVat(this.priceEclVat);
+        if (this.priceExclVat != null) {
+            this.priceInclVat = PriceCalculator.calculatePriceInclVat(this.priceExclVat);
         } else {
-            // moet ik hier invailidexception plaatsen i.p.v. IllegalArgumentException
-            throw new InvalidInputException("Price (excluding VAT) must be greater than 0 to calculate price including VAT.");
-        };
+            throw new IllegalStateException("Price excluding VAT is not set.");
+        }
     }
 
-    public Double getPriceEclVat() {
-        return priceEclVat;
+    public Double getPriceExclVat() {
+        return priceExclVat;
     }
 
-    public void setPriceEclVat(Double priceEclVat) {
-        this.priceEclVat = priceEclVat;
+    public void setPriceExclVat(Double priceExclVat) {
+        this.priceExclVat = priceExclVat;
     }
 
     public Long getId() {

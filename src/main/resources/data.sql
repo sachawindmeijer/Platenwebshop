@@ -17,7 +17,7 @@ VALUES  ('Kim', '$2a$10$tmu29a34zspov1NpW2BB9OF2.4y.OpzQfuQXTnuhAHpD6jq7jNAkq','
 
 
 
-INSERT INTO Lp_Product (id, artist, album, description, genre, in_Stock, price_incl_vat, price_ecl_vat)
+INSERT INTO Lp_Product (id, artist, album, description, genre, in_Stock, price_incl_vat, price_excl_vat)
 VALUES
     (3, 'St. Vincent', 'Masseduction', 'Electropop album by a icon',  'ROCK', 50, 30.00, 25.00),
     (4, 'Miles Davis', 'Kind of Blue', 'A jazz masterpiece by Miles Davis', 'JAZZ', 20, 40.00, 33.00),
@@ -43,9 +43,9 @@ VALUES
 
 INSERT INTO report (comment, rapport_datum, total_revenue)
 VALUES
-        ('Monthly Sales Report', CURRENT_DATE, 0.0),
-        ('Weekly Sales Summary', CURRENT_DATE, 0.0),
-        ('Annual Performance Review', CURRENT_DATE, 0.0);
+        ('Monthly Sales Report', CURRENT_DATE, 3420.0),
+        ('Weekly Sales Summary', CURRENT_DATE, 800.0),
+        ('Annual Performance Review', CURRENT_DATE, 560.0);
 
 INSERT INTO report_top_selling_products (report_id, lpproduct_id)
 VALUES

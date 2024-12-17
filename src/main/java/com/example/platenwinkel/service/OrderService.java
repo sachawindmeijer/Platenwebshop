@@ -14,6 +14,7 @@ import com.example.platenwinkel.repositories.OrderRepository;
 import com.example.platenwinkel.repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -97,7 +98,10 @@ public class OrderService {
         return OrderMapper.fromOrderToOutputDto(updatedOrder);
     }
 
-    public void deleteOrder(Long id) {
+    public void deleteOrder(@RequestBody Long id) {
+        if (!orderRepository.existsById(id)) {
+            throw new RecordNotFoundException("No order found with ID: " + id);
+        }
         orderRepository.deleteById(id);
     }
 }

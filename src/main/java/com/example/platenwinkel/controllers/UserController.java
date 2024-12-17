@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -80,13 +81,16 @@ public class UserController {
     }
 
     @PutMapping(value = "/{username}")
-    public ResponseEntity<UserOutputDto> updateKlant(@PathVariable("username") String username, @Valid @RequestBody UserOutputDto dto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new InvalidInputException("Something went wrong, please check the following fields: " + BindingResultHelper.getErrorMessage(bindingResult));
-        }
+    public ResponseEntity<Void> updateUser(
+            @PathVariable("username") String username,
+            @Valid @RequestBody UserInputDto dto) {
+
+
+        // Update de gebruiker via de service
         userService.updateUser(username, dto);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build(); // 204 No Content bij succesvolle update
     }
+
 
     @DeleteMapping(value = "/{username}")
     public ResponseEntity<Object> deleteKlant(@PathVariable("username") String username) {

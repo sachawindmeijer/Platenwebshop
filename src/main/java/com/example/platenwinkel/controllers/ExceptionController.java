@@ -73,14 +73,12 @@ public class ExceptionController {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception exception) {
-        exception.printStackTrace();
-        ErrorResponse errorResponse = new ErrorResponse("Internal Server Error", "An unexpected error occurred.");
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        exception.printStackTrace(); // Consider logging instead of printing in production
+        return buildErrorResponse("Internal Server Error", "An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    @ExceptionHandler(value = DuplicateRecordException.class)
+    @ExceptionHandler(DuplicateRecordException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateRecordException(DuplicateRecordException exception) {
         ErrorResponse errorResponse = new ErrorResponse("Conflict", exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
@@ -90,6 +88,12 @@ public class ExceptionController {
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException exception) {
         ErrorResponse errorResponse = new ErrorResponse("Unauthorized", "Incorrect username or password");
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(String error, String message, HttpStatus status) {
+        ErrorResponse errorResponse = new ErrorResponse(error, message);
+        return new ResponseEntity<>(errorResponse, status);
     }
 }
 
