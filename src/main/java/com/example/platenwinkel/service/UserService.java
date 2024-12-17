@@ -25,7 +25,6 @@ import java.util.Set;
 public class UserService {
     private final UserRepository userRepository;
 
-    //    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -63,17 +62,17 @@ public class UserService {
 
 
     public void updateUser(String username, UserInputDto newUser) {
-        // Valideer inputvelden
+
         validateUserInput(newUser);
 
-        // Zoek de gebruiker in de database
+
         User user = userRepository.findById(username)
                 .orElseThrow(() -> new RecordNotFoundException("User not found: " + username));
 
-        // Werk de gegevens van de gebruiker bij
+
         updateUserData(user, newUser);
 
-        // Sla de bijgewerkte gebruiker op in de database
+
         userRepository.save(user);
     }
 
@@ -89,7 +88,7 @@ public class UserService {
     private void updateUserData(User user, UserInputDto newUser) {
         user.setPassword(newUser.getPassword());
         user.setEmail(newUser.getEmail());
-        user.setEnabled(newUser.enabled != null && newUser.enabled); // Handleer mogelijke null-waarde
+        user.setEnabled(newUser.enabled != null && newUser.enabled);
     }
 
     public Set<Authority> getAuthorities(String username) {

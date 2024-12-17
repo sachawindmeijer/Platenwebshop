@@ -17,7 +17,7 @@ public class User {
 
 
     @Id
-//            (message = "Username cannot be blank")
+
     @NotBlank
     @Size(min = 3, max = 50)
     @Column(nullable = false, unique = true)

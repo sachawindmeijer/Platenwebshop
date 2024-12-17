@@ -16,7 +16,7 @@ public class AuthenticationService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-//Manueel een admin-account aanmaken via de database:
+
     public boolean authenticate(String username, String rawPassword) {
         User user = userRepository. findByUsername(username);
 
